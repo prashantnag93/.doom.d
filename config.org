@@ -1,0 +1,29 @@
+#+TITLE: Literate doom-emacs config
+#+AUTHOR: Prashant Kumar Nag (Shaan) <prashantnag.workmail@gmail.com>
+#+DATE: 2020:04:09
+#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent
+#+OPTIONS: toc:nil
+
+* Table of Contents :TOC_3_gh:noexport:
+- [[#personal-information][Personal Information]]
+- [[#ui][UI]]
+  - [[#themes][Themes]]
+  - [[#doom-dashbard][doom-dashbard]]
+
+* Personal Information
+Let's set some variables with basic user information.
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Prashant Kumar Nag"
+      user-mail-address "prashantnag.workmail@gmail.com")
+#+END_SRC
+* UI
+** Themes
+This section is used for changing the doom themes.
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-vibrant)
+#+end_src
+** doom-dashbard
+Let's change the dashboad with spalsh image.
+#+begin_src emacs-lisp
+(setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
+#+end_src
