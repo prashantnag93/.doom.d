@@ -54,3 +54,6 @@
 
 (package! org-ref)
 (unpin! org-ref)
+(package! org-protocol-capture-html
+  :recipe (:host github
+           :repo "alphapapa/org-protocol-capture-html"))

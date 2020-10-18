@@ -89,3 +89,59 @@
    org-journal-dir (file-truename "~/Dropbox/org/private/")
    org-journal-enable-encryption nil
    org-journal-enable-agenda-integration t))
+
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   ;;org-noter-notes-window-location 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; Everything is relative to the main notes file
+   org-noter-notes-search-path (list org_notes)
+   )
+  )
+
+;; Actually start using templates
+(after! org-capture
+  ;; Firefox
+  (add-to-list 'org-capture-templates
+               '("P" "Protocol" entry
+                 (file+headline +org-capture-notes-file "Inbox")
+                 "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"
+                 :prepend t
+                 :kill-buffer t))
+  (add-to-list 'org-capture-templates
+               '("L" "Protocol Link" entry
+                 (file+headline +org-capture-notes-file "Inbox")
+                 "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n"
+                 :prepend t
+                 :kill-buffer t))
+  ;; Misc
+  (add-to-list 'org-capture-templates
+         '("a"               ; key
+           "Article"         ; name
+           entry             ; type
+           (file+headline "~/Dropbox/org/roam/Notes/consolidated.org" "Article")  ; target
+           "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
+           :prepend t        ; properties
+           :empty-lines 1    ; properties
+           :created t        ; properties
+           ))
+)
+;;
+
+(use-package! org-protocol-capture-html
+  :after org-protocol
+  :config
+  (add-to-list 'org-capture-templates
+               '("w"
+                 "Web site"
+                 entry
+                 (file+headline +org-capture-notes-file "Website")  ; target
+                 "* %a :website:\n\n%U %?\n\n%:initial")
+               )
+  )
