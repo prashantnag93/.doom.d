@@ -70,7 +70,71 @@ This will takes the settings for Deft.
  zot_bib "~/Dropbox/org/Notes/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
- org-roam-directory org_notes)
+ org-roam-directory org_notes
+ org-default-notes-file (concat org_notes "inbox.org"))
+
+(after! org
+
+  (setq +org-capture-todo-file org-default-notes-file
+        +org-capture-notes-file org-default-notes-file
+        +org-capture-projects-file org-default-notes-file)
+
+  (setq org-log-done 'time
+        org-log-into-drawer t
+        org-log-state-notes-insert-after-drawers nil))
+#+end_src
+**** org-tag-alist
+#+begin_src emacs-lisp
+  (setq org-tag-alist (quote ((:startgrouptag)
+                              ("Context")
+                              (:grouptags)
+                              ("@errand" . ?e)
+                              ("@manit" . ?m)
+                              ("@home" . ?h)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Use this")
+                              (:grouptags)
+                              ("?phone" . ?p)
+                              ("?laptop" . ?l)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Energy")
+                              (:grouptags)
+                              ("Challange" . ?1)
+                              ("Average" . ?2)
+                              ("Easy" . ?3)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Time")
+                              (:grouptags)
+                              ("15min" . ?<)
+                              ("30min" . ?=)
+                              ("1hr" . ?>)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Related")
+                              (:grouptags)
+                              ("#PhD" . ?P)
+                              ("#coding" . ?C)
+                              ("#knowledge" . ?K)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Status")
+                              (:grouptags)
+                              ("WAITING" . ?w)
+                              ("HOLD" . ?H)
+                              ("CANCELLED" . ?c)
+                              (:endgrouptag)
+                              (:startgrouptag . nil)
+                              ("Category")
+                              (:grouptags . nil)
+                              ("Hobby")
+                              ("Health")
+                              ("House")
+                              ("Bike")
+                              ("Bills")
+                              (:endgrouptag . nil))))
 #+end_src
 *** Fancy Customisation
 It’s also nice to change the character used for collapsed items (by default …), I think ▾ is better for indicating ‘collapsed section’.
@@ -144,6 +208,9 @@ It’s also nice to change the character used for collapsed items (by default �
 #+end_src
 
 *** Org-Noter
+:PROPERTIES:
+:ID:       45fcfc0b-8bd0-4bb6-9909-63de07be6ce7
+:END:
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-noter
   :after (:any org pdf-view)
@@ -185,7 +252,7 @@ It’s also nice to change the character used for collapsed items (by default �
          '("a"               ; key
            "Article"         ; name
            entry             ; type
-           (file+headline "~/Dropbox/org/roam/Notes/consolidated.org" "Article")  ; target
+           (file+headline "~/Dropbox/org/Notes/consolidated.org" "Article")  ; target
            "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
            :prepend t        ; properties
            :empty-lines 1    ; properties
@@ -195,6 +262,9 @@ It’s also nice to change the character used for collapsed items (by default �
 ;;
 #+end_src
 *** Org Protocol Capture html
+:PROPERTIES:
+:ID:       12d3627c-f5c3-4de4-8378-7a2c86051b5b
+:END:
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-protocol-capture-html
   :after org-protocol

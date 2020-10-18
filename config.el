@@ -7,10 +7,6 @@
 
 (setq avy-all-windows t)
 
-(setq avy-all-windows t)
-
-(setq doom-theme 'doom-vibrant)
-
 (setq doom-theme 'doom-vibrant)
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
@@ -26,7 +22,69 @@
  zot_bib "~/Dropbox/org/Notes/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
- org-roam-directory org_notes)
+ org-roam-directory org_notes
+ org-default-notes-file (concat org_notes "inbox.org"))
+
+(after! org
+
+  (setq +org-capture-todo-file org-default-notes-file
+        +org-capture-notes-file org-default-notes-file
+        +org-capture-projects-file org-default-notes-file)
+
+  (setq org-log-done 'time
+        org-log-into-drawer t
+        org-log-state-notes-insert-after-drawers nil))
+
+(setq org-tag-alist (quote ((:startgrouptag)
+                            ("Context")
+                            (:grouptags)
+                            ("@errand" . ?e)
+                            ("@manit" . ?m)
+                            ("@home" . ?h)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Use this")
+                            (:grouptags)
+                            ("?phone" . ?p)
+                            ("?laptop" . ?l)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Energy")
+                            (:grouptags)
+                            ("Challange" . ?1)
+                            ("Average" . ?2)
+                            ("Easy" . ?3)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Time")
+                            (:grouptags)
+                            ("15min" . ?<)
+                            ("30min" . ?=)
+                            ("1hr" . ?>)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Related")
+                            (:grouptags)
+                            ("#PhD" . ?P)
+                            ("#coding" . ?C)
+                            ("#knowledge" . ?K)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Status")
+                            (:grouptags)
+                            ("WAITING" . ?w)
+                            ("HOLD" . ?H)
+                            ("CANCELLED" . ?c)
+                            (:endgrouptag)
+                            (:startgrouptag . nil)
+                            ("Category")
+                            (:grouptags . nil)
+                            ("Hobby")
+                            ("Health")
+                            ("House")
+                            ("Bike")
+                            ("Bills")
+                            (:endgrouptag . nil))))
 
 (after! org
   (setq org-ellipsis "⤵" ;;▾
@@ -125,7 +183,7 @@
          '("a"               ; key
            "Article"         ; name
            entry             ; type
-           (file+headline "~/Dropbox/org/roam/Notes/consolidated.org" "Article")  ; target
+           (file+headline "~/Dropbox/org/Notes/consolidated.org" "Article")  ; target
            "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
            :prepend t        ; properties
            :empty-lines 1    ; properties
