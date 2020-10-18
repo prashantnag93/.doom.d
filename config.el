@@ -11,6 +11,12 @@
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
 
+;;(setq deft-directory "~/Dropbox/org/roam/Notes/")
+(setq deft-recursive t)
+(setq deft-use-filename-as-title t
+      deft-auto-save-interval -1.0)
+(setq deft-current-sort-method 'title)
+
 (setq
  org_notes "~/Dropbox/org/"
  zot_bib "~/Dropbox/org/Notes/Mylib.bib"

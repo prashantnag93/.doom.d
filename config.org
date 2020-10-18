@@ -12,6 +12,7 @@
 - [[#ui][UI]]
   - [[#themes][Themes]]
   - [[#doom-dashbard][doom-dashbard]]
+  - [[#deft-mode][Deft Mode]]
 - [[#lang][LANG]]
   - [[#org][Org]]
     - [[#global-org-settings][Global org settings]]
@@ -47,6 +48,15 @@ This section is used for changing the doom themes.
 Let's change the dashboad with spalsh image.
 #+begin_src emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
+#+end_src
+** Deft Mode
+This will takes the settings for Deft.
+#+begin_src emacs-lisp :tangle yes
+;;(setq deft-directory "~/Dropbox/org/roam/Notes/")
+(setq deft-recursive t)
+(setq deft-use-filename-as-title t
+      deft-auto-save-interval -1.0)
+(setq deft-current-sort-method 'title)
 #+end_src
 * LANG
 ** Org
