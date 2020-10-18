@@ -12,7 +12,7 @@
 - [[#ui][UI]]
   - [[#themes][Themes]]
   - [[#doom-dashbard][doom-dashbard]]
-  - [[#deft-mode][Deft Mode]]
+  - [[#deft][Deft]]
 - [[#lang][LANG]]
   - [[#org][Org]]
     - [[#global-org-settings][Global org settings]]
@@ -49,7 +49,7 @@ Let's change the dashboad with spalsh image.
 #+begin_src emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
 #+end_src
-** Deft Mode
+** Deft
 This will takes the settings for Deft.
 #+begin_src emacs-lisp :tangle yes
 ;;(setq deft-directory "~/Dropbox/org/roam/Notes/")
@@ -67,7 +67,7 @@ This will takes the settings for Deft.
  zot_bib "~/Dropbox/org/Notes/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
- org-roam-directory org_notes
+ org-roam-directory org_notes)
 #+end_src
 *** Fancy Customisation
 It’s also nice to change the character used for collapsed items (by default …), I think ▾ is better for indicating ‘collapsed section’.

@@ -7,6 +7,10 @@
 
 (setq avy-all-windows t)
 
+(setq avy-all-windows t)
+
+(setq doom-theme 'doom-vibrant)
+
 (setq doom-theme 'doom-vibrant)
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
@@ -22,7 +26,7 @@
  zot_bib "~/Dropbox/org/Notes/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
- org-roam-directory org_notes
+ org-roam-directory org_notes)
 
 (after! org
   (setq org-ellipsis "⤵" ;;▾
