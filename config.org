@@ -22,6 +22,9 @@
     - [[#org-noter][Org-Noter]]
     - [[#org-capture-templates][org capture templates]]
     - [[#org-protocol-capture-html][Org Protocol Capture html]]
+    - [[#helm-bibtex][Helm-Bibtex]]
+    - [[#org-ref][Org-Ref]]
+    - [[#org-roam-bibtex][Org-Roam-Bibtex]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -71,10 +74,10 @@ This will takes the settings for Deft.
  org-directory org_notes
  deft-directory org_notes
  org-roam-directory org_notes
- org-default-notes-file (concat org_notes "inbox.org"))
+ )
 
 (after! org
-
+    (setq org-default-notes-file "~/Dropbox/org/gtd/inbox.org")
   (setq +org-capture-todo-file org-default-notes-file
         +org-capture-notes-file org-default-notes-file
         +org-capture-projects-file org-default-notes-file)
@@ -136,6 +139,8 @@ This will takes the settings for Deft.
                               ("Bills")
                               (:endgrouptag . nil))))
 #+end_src
+**** Org- GTD
+
 *** Fancy Customisation
 It’s also nice to change the character used for collapsed items (by default …), I think ▾ is better for indicating ‘collapsed section’.
 #+begin_src emacs-lisp
@@ -252,7 +257,7 @@ It’s also nice to change the character used for collapsed items (by default �
          '("a"               ; key
            "Article"         ; name
            entry             ; type
-           (file+headline "~/Dropbox/org/Notes/consolidated.org" "Article")  ; target
+           (file+headline "~/Dropbox/org/gtd/inbox.org" "Article")  ; target
            "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
            :prepend t        ; properties
            :empty-lines 1    ; properties
@@ -277,4 +282,84 @@ It’s also nice to change the character used for collapsed items (by default �
                  "* %a :website:\n\n%U %?\n\n%:initial")
                )
   )
+#+end_src
+
+*** Helm-Bibtex
+#+BEGIN_SRC emacs-lisp
+
+(after! org-ref
+  (setq
+   bibtex-completion-notes-path org_notes
+   bibtex-completion-bibliography zot_bib
+   bibtex-completion-pdf-field "file"
+   bibtex-completion-notes-template-multiple-files
+   (concat
+    "#+TITLE: ${title}\n"
+    "#+ROAM_KEY: cite:${=key=}\n"
+    "* TODO Notes\n"
+    ":PROPERTIES:\n"
+    ":Custom_ID: ${=key=}\n"
+    ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+    ":AUTHOR: ${author-abbrev}\n"
+    ":JOURNAL: ${journaltitle}\n"
+    ":DATE: ${date}\n"
+    ":YEAR: ${year}\n"
+    ":DOI: ${doi}\n"
+    ":URL: ${url}\n"
+    ":END:\n\n"
+    )
+   )
+)
+#+END_SRC
+*** Org-Ref
+#+begin_src emacs-lisp
+(use-package! org-ref
+    ;; :init
+    ; code to run before loading org-ref
+    :config
+    (setq
+         org-ref-completion-library 'org-ref-ivy-cite
+         org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+         org-ref-default-bibliography (list zot_bib)
+         org-ref-bibliography-notes (concat org_notes "/bibnotes.org")
+         org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+         org-ref-notes-directory org_notes
+         org-ref-notes-function 'orb-edit-notes
+    )
+     (defun pkn/org-ref-open-in-scihub ()
+    "Open the bibtex entry at point in a browser using the url field or doi field.
+Not for real use, just here for demonstration purposes."
+    (interactive)
+    (let ((doi (org-ref-get-doi-at-point)))
+      (when doi
+        (if (string-match "^http" doi)
+            (browse-url doi)
+          (browse-url (format "http://sci-hub.se/%s" doi)))
+        (message "No url or doi found"))))
+     (add-to-list 'org-ref-helm-user-candidates '("Open in Sci-hub" . org-ref-open-in-scihub))
+     )
+#+end_src
+*** Org-Roam-Bibtex
+Will also setup the ~org-roam-bibtex~ thing here.
+As foretold in the last line, there are more settings for [[https://github.com/Zaeph/org-roam-bibtex][ORB]]. The template is
+modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
+#+begin_src emacs-lisp :tangle yes
+ (use-package! org-roam-bibtex
+  :after (org-roam)
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (setq org-roam-bibtex-preformat-keywords
+   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "literature/${slug}"
+           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
+
+- tags ::
+- keywords :: ${keywords}
+
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+
+           :unnarrowed t))))
 #+end_src

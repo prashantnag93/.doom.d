@@ -23,10 +23,10 @@
  org-directory org_notes
  deft-directory org_notes
  org-roam-directory org_notes
- org-default-notes-file (concat org_notes "inbox.org"))
+ )
 
 (after! org
-
+    (setq org-default-notes-file "~/Dropbox/org/gtd/inbox.org")
   (setq +org-capture-todo-file org-default-notes-file
         +org-capture-notes-file org-default-notes-file
         +org-capture-projects-file org-default-notes-file)
@@ -183,7 +183,7 @@
          '("a"               ; key
            "Article"         ; name
            entry             ; type
-           (file+headline "~/Dropbox/org/Notes/consolidated.org" "Article")  ; target
+           (file+headline "~/Dropbox/org/gtd/inbox.org" "Article")  ; target
            "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
            :prepend t        ; properties
            :empty-lines 1    ; properties
@@ -203,3 +203,72 @@
                  "* %a :website:\n\n%U %?\n\n%:initial")
                )
   )
+
+(after! org-ref
+  (setq
+   bibtex-completion-notes-path org_notes
+   bibtex-completion-bibliography zot_bib
+   bibtex-completion-pdf-field "file"
+   bibtex-completion-notes-template-multiple-files
+   (concat
+    "#+TITLE: ${title}\n"
+    "#+ROAM_KEY: cite:${=key=}\n"
+    "* TODO Notes\n"
+    ":PROPERTIES:\n"
+    ":Custom_ID: ${=key=}\n"
+    ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+    ":AUTHOR: ${author-abbrev}\n"
+    ":JOURNAL: ${journaltitle}\n"
+    ":DATE: ${date}\n"
+    ":YEAR: ${year}\n"
+    ":DOI: ${doi}\n"
+    ":URL: ${url}\n"
+    ":END:\n\n"
+    )
+   )
+)
+
+(use-package! org-ref
+    ;; :init
+    ; code to run before loading org-ref
+    :config
+    (setq
+         org-ref-completion-library 'org-ref-ivy-cite
+         org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+         org-ref-default-bibliography (list zot_bib)
+         org-ref-bibliography-notes (concat org_notes "/bibnotes.org")
+         org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+         org-ref-notes-directory org_notes
+         org-ref-notes-function 'orb-edit-notes
+    )
+     (defun pkn/org-ref-open-in-scihub ()
+    "Open the bibtex entry at point in a browser using the url field or doi field.
+Not for real use, just here for demonstration purposes."
+    (interactive)
+    (let ((doi (org-ref-get-doi-at-point)))
+      (when doi
+        (if (string-match "^http" doi)
+            (browse-url doi)
+          (browse-url (format "http://sci-hub.se/%s" doi)))
+        (message "No url or doi found"))))
+     (add-to-list 'org-ref-helm-user-candidates '("Open in Sci-hub" . org-ref-open-in-scihub))
+     )
+
+(use-package! org-roam-bibtex
+  :after (org-roam)
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (setq org-roam-bibtex-preformat-keywords
+   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "literature/${slug}"
+           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
+
+- tags ::
+- keywords :: ${keywords}
+
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+
+           :unnarrowed t))))
