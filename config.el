@@ -179,9 +179,9 @@
                  :prepend t
                  :kill-buffer t))
   (add-to-list 'org-capture-templates
-               '("L" "Protocol Link" entry
-                 (file+headline +org-capture-notes-file "Inbox")
-                 "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n"
+               '("R" "Reading" entry
+                 (file+headline "~/Dropbox/org/gtd/reading.org" "Consepts for Reading")
+                 "* TODO %?:#PhD:\n/Entered on/ %u\n"
                  :prepend t
                  :kill-buffer t))
   ;; Misc
