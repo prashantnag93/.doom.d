@@ -86,6 +86,12 @@
                             ("Bills")
                             (:endgrouptag . nil))))
 
+(after! org (setq org-todo-keywords
+      '((sequence "TODO(t)" "PROJ(p!)" "NEXT(n!)" "SOMEDAY(s!)" "DELEGATED(e@/!)" "|" "DONE(d@/!)")
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "CANCELLED(c@/!)")
+        (sequence "UNREAD(u!)" "READING(r!)" "READ(R@/!)")
+        (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)"))))
+
 (after! org
   (setq org-ellipsis "⤵" ;;▾
         org-startup-folded t
@@ -272,3 +278,12 @@ Not for real use, just here for demonstration purposes."
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
            :unnarrowed t))))
+
+(setq org-file-apps
+  '((auto-mode . emacs)
+    ("\\.mm\\'" . default)
+    ("\\.x?html?\\'" . default)
+    ("\\.pdf\\'" . emacs) ;; another option: "okular --unique file:%s"
+    ("\\.png\\'" . viewnior)
+    ("\\.jpg\\'" . viewnior)
+    ))

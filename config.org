@@ -25,6 +25,8 @@
     - [[#helm-bibtex][Helm-Bibtex]]
     - [[#org-ref][Org-Ref]]
     - [[#org-roam-bibtex][Org-Roam-Bibtex]]
+- [[#tools][TOOLS]]
+  - [[#pdf][pdf]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -138,6 +140,14 @@ This will takes the settings for Deft.
                               ("Bike")
                               ("Bills")
                               (:endgrouptag . nil))))
+#+end_src
+**** org-TODO-keywords
+#+begin_src emacs-lisp :tangle yes
+(after! org (setq org-todo-keywords
+      '((sequence "TODO(t)" "PROJ(p!)" "NEXT(n!)" "SOMEDAY(s!)" "DELEGATED(e@/!)" "|" "DONE(d@/!)")
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "CANCELLED(c@/!)")
+        (sequence "UNREAD(u!)" "READING(r!)" "READ(R@/!)")
+        (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)"))))
 #+end_src
 **** Org- GTD
 
@@ -362,4 +372,16 @@ modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
            :unnarrowed t))))
+#+end_src
+* TOOLS
+** pdf
+#+begin_src emacs-lisp :tangle yes
+(setq org-file-apps
+  '((auto-mode . emacs)
+    ("\\.mm\\'" . default)
+    ("\\.x?html?\\'" . default)
+    ("\\.pdf\\'" . emacs) ;; another option: "okular --unique file:%s"
+    ("\\.png\\'" . viewnior)
+    ("\\.jpg\\'" . viewnior)
+    ))
 #+end_src
