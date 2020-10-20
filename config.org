@@ -259,7 +259,13 @@ Itâ€™s also nice to change the character used for collapsed items (by default â€
   (add-to-list 'org-capture-templates
                '("R" "Reading" entry
                  (file+headline "~/Dropbox/org/gtd/reading.org" "Consepts for Reading")
-                 "* TODO %?:#PhD:\n/Entered on/ %u\n"
+                 "* TODO %? :#PhD:\n/Entered on/ %u\n"
+                 :prepend t
+                 :kill-buffer t))
+  (add-to-list 'org-capture-templates
+               '("K" "Keywords" entry
+                 (file+headline "~/Dropbox/org/gtd/reading.org" "Keywords for Consepts")
+                 "* TODO %? :#PhD:keywords:\n/Entered on/ %u\n%a\n"
                  :prepend t
                  :kill-buffer t))
   ;; Misc
