@@ -11,6 +11,8 @@
   - [[#screen-related][Screen related]]
   - [[#auto-customization][Auto-customization]]
   - [[#avy-all-windows][Avy all windows]]
+  - [[#highlight-region][Highlight Region]]
+  - [[#beacon-mode][Beacon mode]]
 - [[#ui][UI]]
   - [[#themes][Themes]]
   - [[#doom-dashbard][doom-dashbard]]
@@ -85,6 +87,19 @@ This will keep the customize settings into separate file.
 ** Avy all windows
 #+begin_src emacs-lisp :tangle yes
 (setq avy-all-windows t)
+#+end_src
+** Highlight Region
+#+begin_src emacs-lisp :tangle yes
+(setq evil-goggles-duration 1
+      evil-goggles-pulse t)
+#+end_src
+** Beacon mode
+#+begin_src emacs-lisp :tangle yes
+(beacon-mode 1)
+(setq beacon-push-mark 10)
+(setq beacon-blink-delay 0.3)
+(setq beacon-blink-duration 0.3)
+(setq beacon-color "#ae4cc7")
 #+end_src
 * UI
 ** Themes
