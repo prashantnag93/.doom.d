@@ -4,7 +4,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent
 #+OPTIONS: toc:nil
 
-* Table of Contents :TOC_3_gh:noexport:
+* Table Of Contents :Toc_3_gh:noexport:
 - [[#personal-information][Personal Information]]
 - [[#global-settings][Global Settings]]
   - [[#simple-settings][Simple settings]]
