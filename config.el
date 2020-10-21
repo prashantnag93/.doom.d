@@ -1,11 +1,47 @@
 (setq user-full-name "Prashant Kumar Nag"
       user-mail-address "prashantnag.workmail@gmail.com")
 
+(setq-default
+ delete-by-moving-to-trash t                      ; Delete files to trash
+ tab-width 4                                      ; Set width for tabs
+ uniquify-buffer-name-style 'forward              ; Uniquify buffer names
+ window-combination-resize t                      ; take new window space from all other windows (not just current)
+ x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+
+(setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
+      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+      auto-save-default t                         ; Nobody likes to loose work, I certainly don't
+      inhibit-compacting-font-caches t            ; When there are lots of glyphs, keep them in memory
+      truncate-string-ellipsis "…")               ; Unicode ellispis are nicer than "...", and also save /precious/ space
+
+(delete-selection-mode 1)                         ; Replace selection when inserting text
+(display-time-mode 1)                             ; Enable time in the mode-line
+(display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
+(global-subword-mode 1)                           ; Iterate through CamelCase words
+      ;; IMO, modern editors have trained a bad habit into us all: a burning
+      ;; need for completion all the time -- as we type, as we breathe, as we
+      ;; pray to the ancient ones -- but how often do you *really* need that
+      ;; information? I say rarely. So opt for manual completion:
+(set-language-environment-charset "UTF-8")
+
+(global-auto-revert-mode t)
+
+(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
+    (toggle-frame-maximized)
+  (toggle-frame-fullscreen))
+;; Buffer names modifications
+(setq uniquify-buffer-name-style 'forward)
+(setq which-key-idle-delay 0.5)
+
 (setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 
 (setq avy-all-windows t)
+
+(setq avy-all-windows t)
+
+(setq doom-theme 'doom-vibrant)
 
 (setq doom-theme 'doom-vibrant)
 
@@ -35,56 +71,56 @@
         org-log-into-drawer t
         org-log-state-notes-insert-after-drawers nil))
 
-(setq org-tag-alist (quote ((:startgrouptag)
-                            ("Context")
-                            (:grouptags)
-                            ("@errand" . ?e)
-                            ("@manit" . ?m)
-                            ("@home" . ?h)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Use this")
-                            (:grouptags)
-                            ("?phone" . ?p)
-                            ("?laptop" . ?l)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Energy")
-                            (:grouptags)
-                            ("Challange" . ?1)
-                            ("Average" . ?2)
-                            ("Easy" . ?3)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Time")
-                            (:grouptags)
-                            ("15min" . ?<)
-                            ("30min" . ?=)
-                            ("1hr" . ?>)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Related")
-                            (:grouptags)
-                            ("#PhD" . ?P)
-                            ("#coding" . ?C)
-                            ("#knowledge" . ?K)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Status")
-                            (:grouptags)
-                            ("WAITING" . ?w)
-                            ("HOLD" . ?H)
-                            ("CANCELLED" . ?c)
-                            (:endgrouptag)
-                            (:startgrouptag . nil)
-                            ("Category")
-                            (:grouptags . nil)
-                            ("Hobby")
-                            ("Health")
-                            ("House")
-                            ("Bike")
-                            ("Bills")
-                            (:endgrouptag . nil))))
+  (setq org-tag-alist (quote ((:startgrouptag)
+                              ("Context")
+                              (:grouptags)
+                              ("@errand" . ?e)
+                              ("@manit" . ?m)
+                              ("@home" . ?h)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Use this")
+                              (:grouptags)
+                              ("?phone" . ?p)
+                              ("?laptop" . ?l)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Energy")
+                              (:grouptags)
+                              ("Challange" . ?1)
+                              ("Average" . ?2)
+                              ("Easy" . ?3)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Time")
+                              (:grouptags)
+                              ("15min" . ?<)
+                              ("30min" . ?=)
+                              ("1hr" . ?>)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Related")
+                              (:grouptags)
+                              ("#PhD" . ?P)
+                              ("#coding" . ?C)
+                              ("#knowledge" . ?K)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Status")
+                              (:grouptags)
+                              ("WAITING" . ?w)
+                              ("HOLD" . ?H)
+                              ("CANCELLED" . ?c)
+                              (:endgrouptag)
+                              (:startgrouptag . nil)
+                              ("Category")
+                              (:grouptags . nil)
+                              ("Hobby")
+                              ("Health")
+                              ("House")
+                              ("Bike")
+                              ("Bills")
+                              (:endgrouptag . nil))))
 
 (after! org (setq org-todo-keywords
       '((sequence "TODO(t)" "PROJ(p!)" "NEXT(n!)" "SOMEDAY(s!)" "DELEGATED(e@/!)" "|" "DONE(d@/!)")
@@ -138,12 +174,6 @@
            :head "#+title: ${title}\n"
            :unnarrowed t)))
 )
-
-
-;; Interactive Org Roam Server Graph
-;; (require 'simple-httpd)
-;; (setq httpd-root "/var/www")
-;; (httpd-start)
 
 (after! org-journal
    (setq
@@ -266,7 +296,7 @@ Not for real use, just here for demonstration purposes."
      (add-to-list 'org-ref-helm-user-candidates '("Open in Sci-hub" . org-ref-open-in-scihub))
      )
 
-(use-package! org-roam-bibtex
+ (use-package! org-roam-bibtex
   :after (org-roam)
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :config

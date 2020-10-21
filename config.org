@@ -7,6 +7,8 @@
 * Table of Contents :TOC_3_gh:noexport:
 - [[#personal-information][Personal Information]]
 - [[#global-settings][Global Settings]]
+  - [[#simple-settings][Simple settings]]
+  - [[#screen-related][Screen related]]
   - [[#auto-customization][Auto-customization]]
   - [[#avy-all-windows][Avy all windows]]
 - [[#ui][UI]]
@@ -35,6 +37,44 @@ Let's set some variables with basic user information.
       user-mail-address "prashantnag.workmail@gmail.com")
 #+END_SRC
 * Global Settings
+** Simple settings
+Configuring the simple global setting for DOOM
+#+begin_src emacs-lisp :tangle yes
+(setq-default
+ delete-by-moving-to-trash t                      ; Delete files to trash
+ tab-width 4                                      ; Set width for tabs
+ uniquify-buffer-name-style 'forward              ; Uniquify buffer names
+ window-combination-resize t                      ; take new window space from all other windows (not just current)
+ x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+
+(setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
+      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+      auto-save-default t                         ; Nobody likes to loose work, I certainly don't
+      inhibit-compacting-font-caches t            ; When there are lots of glyphs, keep them in memory
+      truncate-string-ellipsis "…")               ; Unicode ellispis are nicer than "...", and also save /precious/ space
+
+(delete-selection-mode 1)                         ; Replace selection when inserting text
+(display-time-mode 1)                             ; Enable time in the mode-line
+(display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
+(global-subword-mode 1)                           ; Iterate through CamelCase words
+      ;; IMO, modern editors have trained a bad habit into us all: a burning
+      ;; need for completion all the time -- as we type, as we breathe, as we
+      ;; pray to the ancient ones -- but how often do you *really* need that
+      ;; information? I say rarely. So opt for manual completion:
+(set-language-environment-charset "UTF-8")
+
+(global-auto-revert-mode t)
+#+end_src
+** Screen related
+I also lien the idea of fullscreen-ing when opened ~emacs~
+#+begin_src emacs-lisp
+(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
+    (toggle-frame-maximized)
+  (toggle-frame-fullscreen))
+;; Buffer names modifications
+(setq uniquify-buffer-name-style 'forward)
+(setq which-key-idle-delay 0.5)
+#+end_src
 ** Auto-customization
 This will keep the customize settings into separate file.
 #+begin_src emacs-lisp
@@ -203,12 +243,6 @@ It’s also nice to change the character used for collapsed items (by default �
            :head "#+title: ${title}\n"
            :unnarrowed t)))
 )
-
-
-;; Interactive Org Roam Server Graph
-;; (require 'simple-httpd)
-;; (setq httpd-root "/var/www")
-;; (httpd-start)
 #+end_src
 *** Org-Journal
 #+begin_src emacs-lisp :tangle yes
