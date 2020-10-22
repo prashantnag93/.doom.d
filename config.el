@@ -225,18 +225,24 @@
                  "* TODO %? :#PhD:keywords:\n/Entered on/ %u\n%a\n"
                  :prepend t
                  :kill-buffer t))
+  (add-to-list 'org-capture-templates
+               '("concept" "Keywords" entry
+                 (file (get-journal-file-today))
+                 "* TODO %?\n\n %i\n\n from: %a :#PhD:keywords:\n"
+                 :prepend t
+                 :kill-buffer t))
   ;; Misc
   (add-to-list 'org-capture-templates
-         '("a"               ; key
-           "Article"         ; name
-           entry             ; type
-           (file+headline "~/Dropbox/org/gtd/inbox.org" "Article")  ; target
-           "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
-           :prepend t        ; properties
-           :empty-lines 1    ; properties
-           :created t        ; properties
-           ))
-)
+               '("a"               ; key
+                 "Article"         ; name
+                 entry             ; type
+                 (file+headline "~/Dropbox/org/gtd/inbox.org" "Article")  ; target
+                 "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
+                 :prepend t        ; properties
+                 :empty-lines 1    ; properties
+                 :created t        ; properties
+                 ))
+  )
 ;;
 
 (use-package! org-protocol-capture-html
