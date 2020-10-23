@@ -87,7 +87,8 @@
        ;;vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
+       (syntax
+        +childframe)              ; tasing you for every semicolon you forget
        ;; (spell +enchant)             ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
@@ -100,7 +101,9 @@
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
-       lookup              ; navigate your code and its documentation
+       (lookup
+        +docsets
+        +dictionary)              ; navigate your code and its documentation
        lsp
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
@@ -161,6 +164,7 @@
        (org
         +roam
         +journal
+        +jupyter
         +noter
         +pretty
         )               ; organize your plain life in plain text
