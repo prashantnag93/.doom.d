@@ -141,32 +141,30 @@
 
 (after! org-roam
   (setq ;;org-roam-graph-viewer "/usr/bin/open"
-        ;;org-roam-completion-system 'default
-        ;;org-roam-link-title-format "§:%s"
-        +org-roam-open-buffer-on-find-file nil
-        org-roam-db-gc-threshold most-positive-fixnum
-        org-roam-graph-exclude-matcher "private"
-        org-roam-tag-sources '(prop last-directory)
-        org-id-link-to-org-use-id t
-        org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
-)
-(setq org-roam-capture-ref-templates
+   ;;org-roam-completion-system 'default
+   ;;org-roam-link-title-format "§:%s"
+   +org-roam-open-buffer-on-find-file nil
+   org-roam-db-gc-threshold most-positive-fixnum
+   org-roam-graph-exclude-matcher "private"
+   org-roam-tag-sources '(prop last-directory)
+   org-id-link-to-org-use-id t
+   org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
+   )
+  (setq org-roam-capture-ref-templates
         '(("r" "ref" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "websites/${slug}"
            :head "#+roam_key: ${ref}
-#+hugo_slug: ${slug}
 #+roam_tags: website
 #+title: ${title}
 
 - source :: ${ref}"
            :unnarrowed t)))
-(setq org-roam-capture-templates
-'(("l" "lit" plain (function org-roam--capture-get-point)
+  (setq org-roam-capture-templates
+        '(("l" "lit" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "literature/${slug}"
-           :head "#+hugo_slug: ${slug}
-#+title: ${title}\n"
+           :head "#+title: ${title}\n"
            :unnarrowed t)
           ("c" "concept" plain (function org-roam--capture-get-point)
            "%?"
@@ -178,7 +176,7 @@
            :file-name "private/${slug}"
            :head "#+title: ${title}\n"
            :unnarrowed t)))
-)
+  )
 
 (after! org-journal
    (setq
