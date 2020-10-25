@@ -32,6 +32,9 @@
 ;; Buffer names modifications
 (setq uniquify-buffer-name-style 'forward)
 (setq which-key-idle-delay 0.5)
+;; Switch to the new window after splitting
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
 
 (setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
 (when (file-exists-p custom-file)
