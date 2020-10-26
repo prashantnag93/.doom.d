@@ -13,6 +13,7 @@
   - [[#avy-all-windows][Avy all windows]]
   - [[#highlight-region][Highlight Region]]
   - [[#beacon-mode][Beacon mode]]
+- [[#completion][COMPLETION]]
 - [[#ui][UI]]
   - [[#themes][Themes]]
   - [[#doom-dashbard][doom-dashbard]]
@@ -22,6 +23,7 @@
     - [[#global-org-settings][Global org settings]]
     - [[#fancy-customisation][Fancy Customisation]]
     - [[#org-roam][Org-Roam]]
+    - [[#org-roam-server][Org-Roam-Server]]
     - [[#org-journal][Org-Journal]]
     - [[#org-noter][Org-Noter]]
     - [[#org-capture-templates][org capture templates]]
@@ -104,11 +106,19 @@ This will keep the customize settings into separate file.
 (setq beacon-blink-duration 0.3)
 (setq beacon-color "#ae4cc7")
 #+end_src
+* COMPLETION
+#+begin_src emacs-lisp :tangle yes
+(after! ivy
+  ;; I prefer search matching to be ordered; it's more precise
+  (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
+#+end_src
 * UI
 ** Themes
 This section is used for changing the doom themes.
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-vibrant)
+;; (setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "ETBembo" :size 16))
 #+end_src
 ** doom-dashbard
 Let's change the dashboad with spalsh image.
@@ -259,6 +269,11 @@ Itâ€™s also nice to change the character used for collapsed items (by default â€
            :head "#+title: ${title}\n"
            :unnarrowed t)))
   )
+#+end_src
+*** Org-Roam-Server
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-roam-server)
+(add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
 #+end_src
 *** Org-Journal
 #+begin_src emacs-lisp :tangle yes

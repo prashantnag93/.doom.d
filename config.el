@@ -51,7 +51,13 @@
 (setq beacon-blink-duration 0.3)
 (setq beacon-color "#ae4cc7")
 
+(after! ivy
+  ;; I prefer search matching to be ordered; it's more precise
+  (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
+
 (setq doom-theme 'doom-vibrant)
+;; (setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "ETBembo" :size 16))
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
 
@@ -180,6 +186,9 @@
            :head "#+title: ${title}\n"
            :unnarrowed t)))
   )
+
+(use-package! org-roam-server)
+(add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
 
 (after! org-journal
    (setq
