@@ -35,6 +35,12 @@
 ;; Switch to the new window after splitting
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
+;; It will prompt for new buffer selection
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-buffer))
+;;Following code will show the windows preview
+(setq +ivy-buffer-preview t)
 
 (setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
 (when (file-exists-p custom-file)
@@ -58,6 +64,7 @@
 (setq doom-theme 'doom-vibrant)
 ;; (setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "ETBembo" :size 16))
+;; (setq doom-variable-pitch-font (font-spec :family "Overpass" :size 16))
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
 
