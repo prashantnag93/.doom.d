@@ -235,7 +235,7 @@
   (add-to-list 'org-capture-templates
                '("P" "Protocol" entry
                  (file+headline +org-capture-notes-file "Inbox")
-                 "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"
+                 "* %^{Title}\nSource: %u,\n #+BEGIN_QUOTE\n %i \n#+END_QUOTE\n\n\n%?"
                  :prepend t
                  :kill-buffer t))
   (add-to-list 'org-capture-templates
@@ -251,7 +251,7 @@
                  :prepend t
                  :kill-buffer t))
   (add-to-list 'org-capture-templates
-               '("concept" "Keywords" entry
+               '("c" "Keywords" entry
                  (file (get-journal-file-today))
                  "* TODO %?\n\n %i\n\n from: %a :#PhD:keywords:\n"
                  :prepend t
