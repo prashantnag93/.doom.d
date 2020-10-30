@@ -235,8 +235,11 @@ This will takes the settings for Deft.
         (sequence "UNREAD(u!)" "READING(r!)" "READ(R@/!)")
         (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)"))))
 #+end_src
-**** Org- GTD
-
+**** Company-posframe
+#+begin_src emacs-lisp :tangle yes
+(use-package! company-posframe
+  :hook (company-mode . company-posframe-mode))
+#+end_src
 *** Fancy Customisation
 It’s also nice to change the character used for collapsed items (by default …), I think ▾ is better for indicating ‘collapsed section’.
 #+begin_src emacs-lisp
@@ -248,6 +251,9 @@ It’s also nice to change the character used for collapsed items (by default �
 #+end_src
 
 *** Org-Roam
+:PROPERTIES:
+:ID:       fb29d93f-b194-499f-81bc-93b7bf7485ea
+:END:
 #+begin_src emacs-lisp
 (after! org-roam
   (setq ;;org-roam-graph-viewer "/usr/bin/open"
@@ -260,6 +266,23 @@ It’s also nice to change the character used for collapsed items (by default �
    org-id-link-to-org-use-id t
    org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
    )
+  (setq org-roam-capture-templates
+        '(("l" "literature" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "literature/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)
+          ("c" "concept" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "concepts/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)))
+
   (setq org-roam-capture-ref-templates
         '(("r" "ref" plain (function org-roam-capture--get-point)
            "%?"
@@ -270,22 +293,7 @@ It’s also nice to change the character used for collapsed items (by default �
 
 - source :: ${ref}"
            :unnarrowed t)))
-  (setq org-roam-capture-templates
-        '(("l" "lit" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "literature/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)
-          ("c" "concept" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "concepts/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)
-          ("p" "private" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "private/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)))
+  (set-company-backend! 'org-mode '(company-capf))
   )
 #+end_src
 *** Org-Roam-Server

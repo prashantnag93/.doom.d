@@ -61,3 +61,4 @@
 (package! beacon)
 (package! org-roam-server
   :recipe (:host github :repo "org-roam/org-roam-server"))
+(package! company-posframe)

@@ -157,6 +157,9 @@
         (sequence "UNREAD(u!)" "READING(r!)" "READ(R@/!)")
         (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)"))))
 
+(use-package! company-posframe
+  :hook (company-mode . company-posframe-mode))
+
 (after! org
   (setq org-ellipsis "⤵" ;;▾
         org-startup-folded t
@@ -174,6 +177,23 @@
    org-id-link-to-org-use-id t
    org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
    )
+  (setq org-roam-capture-templates
+        '(("l" "literature" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "literature/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)
+          ("c" "concept" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "concepts/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)))
+
   (setq org-roam-capture-ref-templates
         '(("r" "ref" plain (function org-roam-capture--get-point)
            "%?"
@@ -184,22 +204,7 @@
 
 - source :: ${ref}"
            :unnarrowed t)))
-  (setq org-roam-capture-templates
-        '(("l" "lit" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "literature/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)
-          ("c" "concept" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "concepts/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)
-          ("p" "private" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "private/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)))
+  (set-company-backend! 'org-mode '(company-capf))
   )
 
 (use-package! org-roam-server)
