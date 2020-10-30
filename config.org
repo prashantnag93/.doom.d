@@ -134,8 +134,8 @@ This will keep the customize settings into separate file.
 This section is used for changing the doom themes.
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-vibrant)
-;; (setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "ETBembo" :size 16))
+(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 16))
 ;; (setq doom-variable-pitch-font (font-spec :family "Overpass" :size 16))
 #+end_src
 ** doom-dashbard
