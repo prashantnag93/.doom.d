@@ -181,17 +181,17 @@
         '(("l" "literature" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "literature/%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t)
           ("c" "concept" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "concepts/%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t)
           ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}#+created: %u\n#+last_modified: %U\n\n"
+           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t)))
 
   (setq org-roam-capture-ref-templates
