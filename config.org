@@ -62,12 +62,12 @@ Configuring the simple global setting for DOOM
 (display-time-mode 1)                             ; Enable time in the mode-line
 (display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
 (global-subword-mode 1)                           ; Iterate through CamelCase words
-      ;; IMO, modern editors have trained a bad habit into us all: a burning
-      ;; need for completion all the time -- as we type, as we breathe, as we
-      ;; pray to the ancient ones -- but how often do you *really* need that
-      ;; information? I say rarely. So opt for manual completion:
+;; IMO, modern editors have trained a bad habit into us all: a burning
+;; need for completion all the time -- as we type, as we breathe, as we
+;; pray to the ancient ones -- but how often do you *really* need that
+;; information? I say rarely. So opt for manual completion:
 (set-language-environment-charset "UTF-8")
-
+(cd "~/")                                         ; Move to the user directory
 (global-auto-revert-mode t)
 #+end_src
 ** Screen related
