@@ -158,7 +158,7 @@ This will takes the settings for Deft.
 #+begin_src emacs-lisp
 (setq
  org_notes "~/Dropbox/org/"
- zot_bib "~/Dropbox/org/Notes/Mylib.bib"
+ zot_bib "~/Dropbox/org/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
  org-roam-directory org_notes
@@ -267,20 +267,17 @@ Itâ€™s also nice to change the character used for collapsed items (by default â€
    org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
    )
   (setq org-roam-capture-templates
-        '(("l" "literature" plain (function org-roam--capture-get-point)
+        '(("d" "default" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "literature/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-           :unnarrowed t)
-          ("c" "concept" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "concepts/%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :immediate-finish t
            :unnarrowed t)
           ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :immediate-finish t
            :unnarrowed t)))
 
   (setq org-roam-capture-ref-templates
@@ -458,23 +455,23 @@ As foretold in the last line, there are more settings for [[https://github.com/Z
 modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
 #+begin_src emacs-lisp :tangle yes
  (use-package! org-roam-bibtex
-  :after (org-roam)
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :config
-  (setq org-roam-bibtex-preformat-keywords
-   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
-  (setq orb-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           ""
-           :file-name "literature/${slug}"
-           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
+   :after (org-roam)
+   :hook (org-roam-mode . org-roam-bibtex-mode)
+   :config
+   (setq org-roam-bibtex-preformat-keywords
+         '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
+   (setq orb-templates
+         '(("r" "ref" plain (function org-roam-capture--get-point)
+            ""
+            :file-name "literature/${slug}"
+            :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
 
-- tags ::
-- keywords :: ${keywords}
+ - tags ::
+ - keywords :: ${keywords}
 
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+ \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
-           :unnarrowed t))))
+            :unnarrowed t))))
 #+end_src
 * TOOLS
 ** pdf

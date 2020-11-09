@@ -48,6 +48,8 @@
 
 (setq avy-all-windows t)
 
+(setq avy-all-windows t)
+
 (setq evil-goggles-duration 1
       evil-goggles-pulse t)
 
@@ -84,7 +86,7 @@
 
 (setq
  org_notes "~/Dropbox/org/"
- zot_bib "~/Dropbox/org/Notes/Mylib.bib"
+ zot_bib "~/Dropbox/org/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
  org-roam-directory org_notes
@@ -100,56 +102,56 @@
         org-log-into-drawer t
         org-log-state-notes-insert-after-drawers nil))
 
-(setq org-tag-alist (quote ((:startgrouptag)
-                            ("Context")
-                            (:grouptags)
-                            ("@errand" . ?e)
-                            ("@manit" . ?m)
-                            ("@home" . ?h)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Use this")
-                            (:grouptags)
-                            ("?phone" . ?p)
-                            ("?laptop" . ?l)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Energy")
-                            (:grouptags)
-                            ("Challange" . ?1)
-                            ("Average" . ?2)
-                            ("Easy" . ?3)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Time")
-                            (:grouptags)
-                            ("15min" . ?<)
-                            ("30min" . ?=)
-                            ("1hr" . ?>)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Related")
-                            (:grouptags)
-                            ("#PhD" . ?P)
-                            ("#coding" . ?C)
-                            ("#knowledge" . ?K)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Status")
-                            (:grouptags)
-                            ("WAITING" . ?w)
-                            ("HOLD" . ?H)
-                            ("CANCELLED" . ?c)
-                            (:endgrouptag)
-                            (:startgrouptag . nil)
-                            ("Category")
-                            (:grouptags . nil)
-                            ("Hobby")
-                            ("Health")
-                            ("House")
-                            ("Bike")
-                            ("Bills")
-                            (:endgrouptag . nil))))
+  (setq org-tag-alist (quote ((:startgrouptag)
+                              ("Context")
+                              (:grouptags)
+                              ("@errand" . ?e)
+                              ("@manit" . ?m)
+                              ("@home" . ?h)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Use this")
+                              (:grouptags)
+                              ("?phone" . ?p)
+                              ("?laptop" . ?l)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Energy")
+                              (:grouptags)
+                              ("Challange" . ?1)
+                              ("Average" . ?2)
+                              ("Easy" . ?3)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Time")
+                              (:grouptags)
+                              ("15min" . ?<)
+                              ("30min" . ?=)
+                              ("1hr" . ?>)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Related")
+                              (:grouptags)
+                              ("#PhD" . ?P)
+                              ("#coding" . ?C)
+                              ("#knowledge" . ?K)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Status")
+                              (:grouptags)
+                              ("WAITING" . ?w)
+                              ("HOLD" . ?H)
+                              ("CANCELLED" . ?c)
+                              (:endgrouptag)
+                              (:startgrouptag . nil)
+                              ("Category")
+                              (:grouptags . nil)
+                              ("Hobby")
+                              ("Health")
+                              ("House")
+                              ("Bike")
+                              ("Bills")
+                              (:endgrouptag . nil))))
 
 (after! org (setq org-todo-keywords
       '((sequence "TODO(t)" "PROJ(p!)" "NEXT(n!)" "SOMEDAY(s!)" "DELEGATED(e@/!)" "|" "DONE(d@/!)")
@@ -178,20 +180,17 @@
    org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
    )
   (setq org-roam-capture-templates
-        '(("l" "literature" plain (function org-roam--capture-get-point)
+        '(("d" "default" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "literature/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-           :unnarrowed t)
-          ("c" "concept" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "concepts/%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :immediate-finish t
            :unnarrowed t)
           ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :immediate-finish t
            :unnarrowed t)))
 
   (setq org-roam-capture-ref-templates
@@ -337,24 +336,24 @@ Not for real use, just here for demonstration purposes."
      (add-to-list 'org-ref-helm-user-candidates '("Open in Sci-hub" . org-ref-open-in-scihub))
      )
 
-(use-package! org-roam-bibtex
-  :after (org-roam)
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :config
-  (setq org-roam-bibtex-preformat-keywords
-   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
-  (setq orb-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           ""
-           :file-name "literature/${slug}"
-           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
+ (use-package! org-roam-bibtex
+   :after (org-roam)
+   :hook (org-roam-mode . org-roam-bibtex-mode)
+   :config
+   (setq org-roam-bibtex-preformat-keywords
+         '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
+   (setq orb-templates
+         '(("r" "ref" plain (function org-roam-capture--get-point)
+            ""
+            :file-name "literature/${slug}"
+            :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
 
-- tags ::
-- keywords :: ${keywords}
+ - tags ::
+ - keywords :: ${keywords}
 
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+ \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
-           :unnarrowed t))))
+            :unnarrowed t))))
 
 (setq org-file-apps
   '((auto-mode . emacs)
