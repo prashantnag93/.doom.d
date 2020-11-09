@@ -166,71 +166,6 @@
         org-src-fontify-natively t))
 (setq org-highlight-latex-and-related '(latex))
 
-(after! org-roam
-  (setq ;;org-roam-graph-viewer "/usr/bin/open"
-   ;;org-roam-completion-system 'default
-   ;;org-roam-link-title-format "§:%s"
-   +org-roam-open-buffer-on-find-file nil
-   org-roam-db-gc-threshold most-positive-fixnum
-   org-roam-graph-exclude-matcher "private"
-   org-roam-tag-sources '(prop last-directory)
-   org-id-link-to-org-use-id t
-   org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
-   )
-  (setq org-roam-capture-templates
-        '(("d" "default" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-           :immediate-finish t
-           :unnarrowed t)
-          ("p" "private" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-           :immediate-finish t
-           :unnarrowed t)))
-
-  (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "${slug}"
-           :head "#+roam_key: ${ref}
-#+roam_tags: website
-#+title: ${title}
-
-- source :: ${ref}"
-           :unnarrowed t)))
-  (set-company-backend! 'org-mode '(company-capf))
-  )
-
-(use-package! org-roam-server)
-(add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
-
-(after! org-journal
-   (setq
-    org-journal-date-prefix "#+TITLE:"
-   org-journal-date-format "%A, %d %B %Y"
-   org-journal-file-format "%Y-%m-%d.org"
-   org-journal-dir (file-truename "~/Dropbox/org/private/")
-   org-journal-enable-encryption nil
-   org-journal-enable-agenda-integration t))
-
-(use-package! org-noter
-  :after (:any org pdf-view)
-  :config
-  (setq
-   ;; The WM can handle splits
-   ;;org-noter-notes-window-location 'other-frame
-   ;; Please stop opening frames
-   org-noter-always-create-frame nil
-   ;; I want to see the whole file
-   org-noter-hide-other nil
-   ;; Everything is relative to the main notes file
-   org-noter-notes-search-path (list org_notes)
-   )
-  )
-
 ;; Actually start using templates
 (after! org-capture
   ;; Firefox
@@ -284,9 +219,73 @@
                )
   )
 
+(after! org-roam
+  (setq ;;org-roam-graph-viewer "/usr/bin/open"
+   ;;org-roam-completion-system 'default
+   ;;org-roam-link-title-format "§:%s"
+   +org-roam-open-buffer-on-find-file nil
+   org-roam-db-gc-threshold most-positive-fixnum
+   org-roam-graph-exclude-matcher "private"
+   org-roam-tag-sources '(prop last-directory)
+   org-id-link-to-org-use-id t
+   org-roam-graph-executable "/usr/bin/neato" ;; instead of 'dot' we can use 'neato' also
+   )
+  (setq org-roam-capture-templates
+        '(("d" "default" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :immediate-finish t
+           :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :immediate-finish t
+           :unnarrowed t)))
+
+  (setq org-roam-capture-ref-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "${slug}"
+           :head "#+roam_key: ${ref}
+#+roam_tags: website
+#+title: ${title}
+
+- source :: ${ref}"
+           :unnarrowed t)))
+  (set-company-backend! 'org-mode '(company-capf))
+  )
+
+(use-package! org-ref
+  ;; :init
+                                        ; code to run before loading org-ref
+  :config
+  (setq
+   org-ref-completion-library 'org-ref-ivy-cite
+   org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+   org-ref-default-bibliography (list zot_bib)
+   org-ref-bibliography-notes (concat org_notes "/bibnotes.org")
+   org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+   org-ref-notes-directory (concat org_notes "/literature")
+   org-ref-notes-function 'orb-edit-notes
+   )
+  (defun pkn/org-ref-open-in-scihub ()
+    "Open the bibtex entry at point in a browser using the url field or doi field.
+Not for real use, just here for demonstration purposes."
+    (interactive)
+    (let ((doi (org-ref-get-doi-at-point)))
+      (when doi
+        (if (string-match "^http" doi)
+            (browse-url doi)
+          (browse-url (format "http://sci-hub.se/%s" doi)))
+        (message "No url or doi found"))))
+  (add-to-list 'org-ref-helm-user-candidates '("Open in Sci-hub" . org-ref-open-in-scihub))
+  )
+
 (after! org-ref
   (setq
-   bibtex-completion-notes-path org_notes
+   bibtex-completion-notes-path (concat org_notes "/literature")
    bibtex-completion-bibliography zot_bib
    bibtex-completion-pdf-field "file"
    bibtex-completion-notes-template-multiple-files
@@ -306,33 +305,7 @@
     ":END:\n\n"
     )
    )
-)
-
-(use-package! org-ref
-    ;; :init
-    ; code to run before loading org-ref
-    :config
-    (setq
-         org-ref-completion-library 'org-ref-ivy-cite
-         org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
-         org-ref-default-bibliography (list zot_bib)
-         org-ref-bibliography-notes (concat org_notes "/bibnotes.org")
-         org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
-         org-ref-notes-directory org_notes
-         org-ref-notes-function 'orb-edit-notes
-    )
-     (defun pkn/org-ref-open-in-scihub ()
-    "Open the bibtex entry at point in a browser using the url field or doi field.
-Not for real use, just here for demonstration purposes."
-    (interactive)
-    (let ((doi (org-ref-get-doi-at-point)))
-      (when doi
-        (if (string-match "^http" doi)
-            (browse-url doi)
-          (browse-url (format "http://sci-hub.se/%s" doi)))
-        (message "No url or doi found"))))
-     (add-to-list 'org-ref-helm-user-candidates '("Open in Sci-hub" . org-ref-open-in-scihub))
-     )
+  )
 
 (use-package! org-roam-bibtex
   :after (org-roam)
@@ -352,6 +325,33 @@ Not for real use, just here for demonstration purposes."
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
            :unnarrowed t))))
+
+(after! org-journal
+   (setq
+    org-journal-date-prefix "#+TITLE:"
+   org-journal-date-format "%A, %d %B %Y"
+   org-journal-file-format "%Y-%m-%d.org"
+   org-journal-dir (file-truename "~/Dropbox/org/private/")
+   org-journal-enable-encryption nil
+   org-journal-enable-agenda-integration t))
+
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   ;;org-noter-notes-window-location 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; Everything is relative to the main notes file
+   org-noter-notes-search-path (list org_notes)
+   )
+  )
+
+(use-package! org-roam-server)
+(add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
 
 (setq org-file-apps
   '((auto-mode . emacs)
