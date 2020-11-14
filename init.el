@@ -40,8 +40,8 @@
        hydra
        ;;indent-guides     ; highlighted indent columns
        (ligatures
-        +extra
-        +fira)         ; ligatures and symbols to make your code pretty again
+        ;; +extra
+        +fira)             ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        ;;nav-flash         ; blink cursor line after big motions
@@ -104,9 +104,7 @@
        (lookup
         +docsets
         +dictionary)              ; navigate your code and its documentation
-       (lsp
-        +peek
-        +eglot)
+       lsp
        (magit
         +forge)             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
@@ -159,9 +157,9 @@
         +lsp)             ; writing papers in Emacs has never been so fun
        ;;lean
        ;;factor
-       ledger            ; an accounting system in Emacs
+       ;; ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       ;; markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
@@ -180,7 +178,9 @@
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp)            ; beautiful is better than ugly
+       (python
+        +lsp
+        +pyright)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
