@@ -261,6 +261,21 @@
            :unnarrowed t)))
   (set-company-backend! 'org-mode '(company-capf))
   )
+;; Following code sets the org-roam-dailies
+(setq org-roam-dailies-capture-templates
+      '(("m" "morning" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%A, %d %B %Y>\n"
+         :olp ("Morning Entry"))
+
+        ("j" "journal" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%A, %d %B %Y>\n"
+         :olp ("Journal"))))
 
 (use-package! org-ref
   ;; :init
@@ -330,15 +345,6 @@ Not for real use, just here for demonstration purposes."
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
            :unnarrowed t))))
-
-(after! org-journal
-   (setq
-    org-journal-date-prefix "#+TITLE:"
-   org-journal-date-format "%A, %d %B %Y"
-   org-journal-file-format "%Y-%m-%d.org"
-   org-journal-dir (file-truename "~/Dropbox/org/private/")
-   org-journal-enable-encryption nil
-   org-journal-enable-agenda-integration t))
 
 (use-package! org-noter
   :after (:any org pdf-view)

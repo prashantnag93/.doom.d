@@ -367,6 +367,21 @@ Itâ€™s also nice to change the character used for collapsed items (by default â€
            :unnarrowed t)))
   (set-company-backend! 'org-mode '(company-capf))
   )
+;; Following code sets the org-roam-dailies
+(setq org-roam-dailies-capture-templates
+      '(("m" "morning" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%A, %d %B %Y>\n"
+         :olp ("Morning Entry"))
+
+        ("j" "journal" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%A, %d %B %Y>\n"
+         :olp ("Journal"))))
 #+end_src
 *** Org-Ref
 #+begin_src emacs-lisp
@@ -447,18 +462,6 @@ modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
 
             :unnarrowed t))))
 #+end_src
-*** Org-Journal
-#+begin_src emacs-lisp :tangle yes
-(after! org-journal
-   (setq
-    org-journal-date-prefix "#+TITLE:"
-   org-journal-date-format "%A, %d %B %Y"
-   org-journal-file-format "%Y-%m-%d.org"
-   org-journal-dir (file-truename "~/Dropbox/org/private/")
-   org-journal-enable-encryption nil
-   org-journal-enable-agenda-integration t))
-#+end_src
-
 *** Org-Noter
 :PROPERTIES:
 :ID:       45fcfc0b-8bd0-4bb6-9909-63de07be6ce7

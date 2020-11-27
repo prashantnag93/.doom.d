@@ -170,7 +170,7 @@
        (org
         +dragndrop
         +gnuplot
-        +journal
+        ;; +journal
         +jupyter
         +noter
         +pandoc
