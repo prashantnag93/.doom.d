@@ -23,6 +23,7 @@
 ;; pray to the ancient ones -- but how often do you *really* need that
 ;; information? I say rarely. So opt for manual completion:
 (set-language-environment-charset "UTF-8")
+(set-default-coding-systems 'utf-8)
 (cd "~/")                                         ; Move to the user directory
 (global-auto-revert-mode t)
 
@@ -65,16 +66,20 @@
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 
+(setq warning-minimum-level :emergency)
+
 (after! ivy
   ;; I prefer search matching to be ordered; it's more precise
   (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
 
 (setq doom-theme 'doom-vibrant)
-(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 16))
+(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 )) ;;:weight 'semi-light
+;; doom-variable-pitch-font (font-spec :family "Overpass" :size 18))
 ;; (setq doom-variable-pitch-font (font-spec :family "Overpass" :size 16))
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
+
+(doom/set-frame-opacity 85)
 
 ;;(setq deft-directory "~/Dropbox/org/roam/Notes/")
 (setq deft-recursive t)

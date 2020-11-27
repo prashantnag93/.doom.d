@@ -14,24 +14,27 @@
   - [[#highlight-region][Highlight Region]]
   - [[#beacon-mode][Beacon mode]]
   - [[#which-key][Which-Key]]
+  - [[#warning-level][Warning level]]
 - [[#completion][COMPLETION]]
 - [[#ui][UI]]
   - [[#themes][Themes]]
   - [[#doom-dashbard][doom-dashbard]]
+  - [[#doom-opacity][Doom opacity]]
   - [[#deft][Deft]]
 - [[#lang][LANG]]
-  - [[#org][Org]]
+  - [[#org][ORG]]
     - [[#global-org-settings][Global org settings]]
     - [[#fancy-customisation][Fancy Customisation]]
-    - [[#org-roam][Org-Roam]]
-    - [[#org-roam-server][Org-Roam-Server]]
-    - [[#org-journal][Org-Journal]]
-    - [[#org-noter][Org-Noter]]
     - [[#org-capture-templates][org capture templates]]
     - [[#org-protocol-capture-html][Org Protocol Capture html]]
-    - [[#helm-bibtex][Helm-Bibtex]]
+    - [[#org-roam][Org-Roam]]
     - [[#org-ref][Org-Ref]]
+    - [[#helm-bibtex][Helm-Bibtex]]
     - [[#org-roam-bibtex][Org-Roam-Bibtex]]
+    - [[#org-journal][Org-Journal]]
+    - [[#org-noter][Org-Noter]]
+    - [[#org-roam-server][Org-Roam-Server]]
+  - [[#latex][LATEX]]
 - [[#tools][TOOLS]]
   - [[#pdf][pdf]]
 
@@ -67,11 +70,12 @@ Configuring the simple global setting for DOOM
 ;; pray to the ancient ones -- but how often do you *really* need that
 ;; information? I say rarely. So opt for manual completion:
 (set-language-environment-charset "UTF-8")
+(set-default-coding-systems 'utf-8)
 (cd "~/")                                         ; Move to the user directory
 (global-auto-revert-mode t)
 #+end_src
 ** Screen related
-I also lien the idea of fullscreen-ing when opened ~emacs~
+I also like the idea of fullscreen-ing when opened ~emacs~
 #+begin_src emacs-lisp
 (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
     (toggle-frame-maximized)
@@ -123,6 +127,10 @@ This will keep the customize settings into separate file.
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 #+end_src
+** Warning level
+#+begin_src emacs-lisp :tangle yes
+(setq warning-minimum-level :emergency)
+#+end_src
 * COMPLETION
 #+begin_src emacs-lisp :tangle yes
 (after! ivy
@@ -134,14 +142,18 @@ This will keep the customize settings into separate file.
 This section is used for changing the doom themes.
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-vibrant)
-(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 16))
+(setq doom-font (font-spec :family "Ubuntu Mono" :size 16 )) ;;:weight 'semi-light
+;; doom-variable-pitch-font (font-spec :family "Overpass" :size 18))
 ;; (setq doom-variable-pitch-font (font-spec :family "Overpass" :size 16))
 #+end_src
 ** doom-dashbard
 Let's change the dashboad with spalsh image.
 #+begin_src emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
+#+end_src
+** Doom opacity
+#+begin_src emacs-lisp :tangle yes
+(doom/set-frame-opacity 85)
 #+end_src
 ** Deft
 This will takes the settings for Deft.
@@ -153,7 +165,7 @@ This will takes the settings for Deft.
 (setq deft-current-sort-method 'title)
 #+end_src
 * LANG
-** Org
+** ORG
 *** Global org settings
 #+begin_src emacs-lisp
 (setq
@@ -249,7 +261,6 @@ It’s also nice to change the character used for collapsed items (by default �
         org-src-fontify-natively t))
 (setq org-highlight-latex-and-related '(latex))
 #+end_src
-
 *** org capture templates
 :PROPERTIES:
 :ID:       1f419633-0084-48f4-8b65-5e20e185093b
@@ -473,6 +484,7 @@ modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
 (use-package! org-roam-server)
 (add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
 #+end_src
+** LATEX
 * TOOLS
 ** pdf
 #+begin_src emacs-lisp :tangle yes
