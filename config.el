@@ -49,6 +49,8 @@
 
 (setq avy-all-windows t)
 
+(setq avy-all-windows t)
+
 (setq evil-goggles-duration 1
       evil-goggles-pulse t)
 
@@ -81,6 +83,8 @@
 
 (doom/set-frame-opacity 85)
 
+(doom/set-frame-opacity 85)
+
 ;;(setq deft-directory "~/Dropbox/org/roam/Notes/")
 (setq deft-recursive t)
 (setq deft-use-filename-as-title t
@@ -105,56 +109,56 @@
         org-log-into-drawer t
         org-log-state-notes-insert-after-drawers nil))
 
-(setq org-tag-alist (quote ((:startgrouptag)
-                            ("Context")
-                            (:grouptags)
-                            ("@errand" . ?e)
-                            ("@manit" . ?m)
-                            ("@home" . ?h)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Use this")
-                            (:grouptags)
-                            ("?phone" . ?p)
-                            ("?laptop" . ?l)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Energy")
-                            (:grouptags)
-                            ("Challange" . ?1)
-                            ("Average" . ?2)
-                            ("Easy" . ?3)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Time")
-                            (:grouptags)
-                            ("15min" . ?<)
-                            ("30min" . ?=)
-                            ("1hr" . ?>)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Related")
-                            (:grouptags)
-                            ("#PhD" . ?P)
-                            ("#coding" . ?C)
-                            ("#knowledge" . ?K)
-                            (:endgrouptag)
-                            (:startgrouptag)
-                            ("Status")
-                            (:grouptags)
-                            ("WAITING" . ?w)
-                            ("HOLD" . ?H)
-                            ("CANCELLED" . ?c)
-                            (:endgrouptag)
-                            (:startgrouptag . nil)
-                            ("Category")
-                            (:grouptags . nil)
-                            ("Hobby")
-                            ("Health")
-                            ("House")
-                            ("Bike")
-                            ("Bills")
-                            (:endgrouptag . nil))))
+  (setq org-tag-alist (quote ((:startgrouptag)
+                              ("Context")
+                              (:grouptags)
+                              ("@errand" . ?e)
+                              ("@manit" . ?m)
+                              ("@home" . ?h)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Use this")
+                              (:grouptags)
+                              ("?phone" . ?p)
+                              ("?laptop" . ?l)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Energy")
+                              (:grouptags)
+                              ("Challange" . ?1)
+                              ("Average" . ?2)
+                              ("Easy" . ?3)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Time")
+                              (:grouptags)
+                              ("15min" . ?<)
+                              ("30min" . ?=)
+                              ("1hr" . ?>)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Related")
+                              (:grouptags)
+                              ("#PhD" . ?P)
+                              ("#coding" . ?C)
+                              ("#knowledge" . ?K)
+                              (:endgrouptag)
+                              (:startgrouptag)
+                              ("Status")
+                              (:grouptags)
+                              ("WAITING" . ?w)
+                              ("HOLD" . ?H)
+                              ("CANCELLED" . ?c)
+                              (:endgrouptag)
+                              (:startgrouptag . nil)
+                              ("Category")
+                              (:grouptags . nil)
+                              ("Hobby")
+                              ("Health")
+                              ("House")
+                              ("Bike")
+                              ("Bills")
+                              (:endgrouptag . nil))))
 
 (after! org (setq org-todo-keywords
       '((sequence "TODO(t)" "PROJ(p!)" "NEXT(n!)" "SOMEDAY(s!)" "DELEGATED(e@/!)" "|" "DONE(d@/!)")
@@ -171,46 +175,80 @@
         org-src-fontify-natively t))
 (setq org-highlight-latex-and-related '(latex))
 
-;; Actually start using templates
-(after! org-capture
-  ;; Firefox
-  (add-to-list 'org-capture-templates
-               '("P" "Protocol" entry
-                 (file+headline +org-capture-notes-file "Inbox")
-                 "* %^{Title}\nSource: %u,\n #+BEGIN_QUOTE\n %i \n#+END_QUOTE\n\n\n%?"
-                 :prepend t
-                 :kill-buffer t))
-  (add-to-list 'org-capture-templates
-               '("R" "Reading" entry
-                 (file+headline "~/Dropbox/org/gtd/reading.org" "Consepts for Reading")
-                 "* TODO %? :#PhD:\n/Entered on/ %u\n"
-                 :prepend t
-                 :kill-buffer t))
-  (add-to-list 'org-capture-templates
-               '("K" "Keywords" entry
-                 (file+headline "~/Dropbox/org/gtd/reading.org" "Keywords for Consepts")
-                 "* TODO %? :#PhD:keywords:\n/Entered on/ %u\n%a\n"
-                 :prepend t
-                 :kill-buffer t))
-  (add-to-list 'org-capture-templates
-               '("c" "Keywords" entry
-                 (file (get-journal-file-today))
-                 "* TODO %?\n\n %i\n\n from: %a :#PhD:keywords:\n"
-                 :prepend t
-                 :kill-buffer t))
-  ;; Misc
-  (add-to-list 'org-capture-templates
-               '("a"               ; key
-                 "Article"         ; name
-                 entry             ; type
-                 (file+headline "~/Dropbox/org/gtd/inbox.org" "Article")  ; target
-                 "* %^{Title} %(org-set-tags-command)  :article: \n:PROPERTIES:\n:Created: %U\n:Linked: %a\n:END:\n%i\nBrief description:\n%?"  ; template
-                 :prepend t        ; properties
-                 :empty-lines 1    ; properties
-                 :created t        ; properties
-                 ))
-  )
-;;
+(defun pkn/find-or-create-olp (path &optional this-buffer)
+  "Return a marker pointing to the entry at outline path OLP.
+If anything goes wrong, throw an error, and if you need to do
+something based on this error, you can catch it with
+`condition-case'.
+If THIS-BUFFER is set, the outline path does not contain a file,
+only headings."
+  (let* ((file (pop path))
+         (level 1)
+         (lmin 1)
+         (lmax 1)
+         (start (point-min))
+         (end (point-max))
+         found flevel)
+    (unless (derived-mode-p 'org-mode)
+      (error "Buffer %s needs to be in Org mode" buffer))
+    (org-with-wide-buffer
+     (goto-char start)
+     (dolist (heading path)
+       (let ((re (format org-complex-heading-regexp-format
+                         (regexp-quote heading)))
+             (cnt 0))
+         (while (re-search-forward re end t)
+           (setq level (- (match-end 1) (match-beginning 1)))
+           (when (and (>= level lmin) (<= level lmax))
+             (setq found (match-beginning 0) flevel level cnt (1+ cnt))))
+         (when (> cnt 1)
+           (error "Heading not unique on level %d: %s" lmax heading))
+         (when (= cnt 0)
+           ;; Create heading if it doesn't exist
+           (goto-char end)
+           (unless (bolp) (newline))
+           (org-insert-heading nil nil t)
+           (unless (= lmax 1) (org-do-demote))
+           (insert heading)
+           (setq end (point))
+           (goto-char start)
+           (while (re-search-forward re end t)
+             (setq level (- (match-end 1) (match-beginning 1)))
+             (when (and (>= level lmin) (<= level lmax))
+               (setq found (match-beginning 0) flevel level cnt (1+ cnt))))))
+       (goto-char found)
+       (setq lmin (1+ flevel) lmax (+ lmin (if org-odd-levels-only 1 0)))
+       (setq start found
+             end (save-excursion (org-end-of-subtree t t))))
+     (point-marker))))
+
+(defun pkn/olp-current-buffer (&rest outline-path)
+  "Find the OUTLINE-PATH of the current buffer."
+  (let ((m (pkn/find-or-create-olp (cons (buffer-file-name) outline-path))))
+    (set-buffer (marker-buffer m))
+    (org-capture-put-target-region-and-position)
+    (widen)
+    (goto-char m)
+    (set-marker m nil)))
+
+(setq org-capture-templates
+      `(("i" "Inbox" entry (file "~/Dropbox/org/gtd/inbox.org")
+         ,(concat "* TODO %?\n"
+                  "/Entered on/ %u"))
+        ("e" "Inbox [mail]" entry (file "~/Dropbox/org/gtd/inbox.org")
+         ,(concat "* TODO Process: \"%a\" %?\n"
+                  "/Entered on/ %u"))
+        ("c" "org-protocol-capture" entry (file "~/Dropbox/org/gtd/inbox.org")
+         "* TODO [[%:link][%:description]]\n\n %i"
+         :immediate-finish t)
+        ("m" "Metacognition")
+        ("mq" "Questions" entry (function ,(lambda ()
+                                             (pkn/olp-current-buffer "Metacognition" "Questions")))
+         ,(concat "* TODO Q: %?\n"
+                  "/Entered on/ %u"))
+        ("mn" "Notes" entry (function ,(lambda ()
+                                         (pkn/olp-current-buffer "Metacognition" "Notes")))
+         "* %?\n")))
 
 (use-package! org-protocol-capture-html
   :after org-protocol
@@ -263,18 +301,25 @@
   )
 ;; Following code sets the org-roam-dailies
 (setq org-roam-dailies-capture-templates
-      '(("m" "morning" entry
+      '(("d" "default" entry
          #'org-roam-capture--get-point
          "* %?"
          :file-name "daily/%<%Y-%m-%d>"
-         :head "#+title: %<%A, %d %B %Y>\n"
+         :head "#+title: %<%A, %d %B %Y>\n\n"
+         :olp ("General"))
+
+        ("m" "morning" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%A, %d %B %Y>\n\n"
          :olp ("Morning Entry"))
 
         ("j" "journal" entry
          #'org-roam-capture--get-point
          "* %?"
          :file-name "daily/%<%Y-%m-%d>"
-         :head "#+title: %<%A, %d %B %Y>\n"
+         :head "#+title: %<%A, %d %B %Y>\n\n"
          :olp ("Journal"))))
 
 (use-package! org-ref
@@ -315,7 +360,7 @@ Not for real use, just here for demonstration purposes."
     "* TODO Notes\n"
     ":PROPERTIES:\n"
     ":Custom_ID: ${=key=}\n"
-    ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+    ":NOTER_DOCUMENT: {file}\")\n"
     ":AUTHOR: ${author-abbrev}\n"
     ":JOURNAL: ${journaltitle}\n"
     ":DATE: ${date}\n"
@@ -327,24 +372,25 @@ Not for real use, just here for demonstration purposes."
    )
   )
 
-(use-package! org-roam-bibtex
-  :after (org-roam)
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :config
-  (setq org-roam-bibtex-preformat-keywords
-        '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
-  (setq orb-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           ""
-           :file-name "literature/${slug}"
-           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
+ (use-package! org-roam-bibtex
+   :after (org-roam)
+   :hook (org-roam-mode . org-roam-bibtex-mode)
+   :config
+   (setq orb-preformat-keywords
+         '("citekey" "title" "url" "file" "author-or-editor" "keywords")
+         orb-process-file-field t
+         orb-file-field-extensions "pdf")
+   (setq orb-templates
+         '(("r" "ref" plain (function org-roam-capture--get-point)
+            ""
+            :file-name "literature/${citekey}"
+            :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n
 
-- tags ::
-- keywords :: ${keywords}
+ - keywords :: ${keywords}
 
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+ \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${citekey}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: ${file}\n  :NOTER_PAGE: \n  :END:\n\n"
 
-           :unnarrowed t))))
+            :unnarrowed t))))
 
 (use-package! org-noter
   :after (:any org pdf-view)

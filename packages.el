@@ -50,7 +50,7 @@
 ;(unpin! t)
 (package! org-roam-bibtex
   :recipe (:host github :repo "org-roam/org-roam-bibtex"))
-(unpin! org-roam)
+(unpin! org-roam company-org-roam)
 
 (package! org-ref)
 (unpin! org-ref)
