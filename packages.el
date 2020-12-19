@@ -63,3 +63,17 @@
   :recipe (:host github :repo "org-roam/org-roam-server"))
 (package! company-posframe)
 (package! dmenu)
+
+(package! academic-phrases
+  :recipe (:host github
+           :repo "prashantnag93/academic-phrases"))
+
+(package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el"))
+  :pin "7fa2673c64e259e04aef684ccf09ef85570c388b")
+
+(package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
+
+
+
+(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")

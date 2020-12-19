@@ -49,8 +49,6 @@
 
 (setq avy-all-windows t)
 
-(setq avy-all-windows t)
-
 (setq evil-goggles-duration 1
       evil-goggles-pulse t)
 
@@ -70,6 +68,9 @@
 
 (setq warning-minimum-level :emergency)
 
+(setq ispell-dictionary "en-custom")
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+
 (after! ivy
   ;; I prefer search matching to be ordered; it's more precise
   (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
@@ -80,8 +81,6 @@
 ;; (setq doom-variable-pitch-font (font-spec :family "Overpass" :size 16))
 
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
-
-(doom/set-frame-opacity 85)
 
 (doom/set-frame-opacity 85)
 
@@ -109,56 +108,56 @@
         org-log-into-drawer t
         org-log-state-notes-insert-after-drawers nil))
 
-  (setq org-tag-alist (quote ((:startgrouptag)
-                              ("Context")
-                              (:grouptags)
-                              ("@errand" . ?e)
-                              ("@manit" . ?m)
-                              ("@home" . ?h)
-                              (:endgrouptag)
-                              (:startgrouptag)
-                              ("Use this")
-                              (:grouptags)
-                              ("?phone" . ?p)
-                              ("?laptop" . ?l)
-                              (:endgrouptag)
-                              (:startgrouptag)
-                              ("Energy")
-                              (:grouptags)
-                              ("Challange" . ?1)
-                              ("Average" . ?2)
-                              ("Easy" . ?3)
-                              (:endgrouptag)
-                              (:startgrouptag)
-                              ("Time")
-                              (:grouptags)
-                              ("15min" . ?<)
-                              ("30min" . ?=)
-                              ("1hr" . ?>)
-                              (:endgrouptag)
-                              (:startgrouptag)
-                              ("Related")
-                              (:grouptags)
-                              ("#PhD" . ?P)
-                              ("#coding" . ?C)
-                              ("#knowledge" . ?K)
-                              (:endgrouptag)
-                              (:startgrouptag)
-                              ("Status")
-                              (:grouptags)
-                              ("WAITING" . ?w)
-                              ("HOLD" . ?H)
-                              ("CANCELLED" . ?c)
-                              (:endgrouptag)
-                              (:startgrouptag . nil)
-                              ("Category")
-                              (:grouptags . nil)
-                              ("Hobby")
-                              ("Health")
-                              ("House")
-                              ("Bike")
-                              ("Bills")
-                              (:endgrouptag . nil))))
+(setq org-tag-alist (quote ((:startgrouptag)
+                            ("Context")
+                            (:grouptags)
+                            ("@errand" . ?e)
+                            ("@manit" . ?m)
+                            ("@home" . ?h)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Use this")
+                            (:grouptags)
+                            ("?phone" . ?p)
+                            ("?laptop" . ?l)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Energy")
+                            (:grouptags)
+                            ("Challange" . ?1)
+                            ("Average" . ?2)
+                            ("Easy" . ?3)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Time")
+                            (:grouptags)
+                            ("15min" . ?<)
+                            ("30min" . ?=)
+                            ("1hr" . ?>)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Related")
+                            (:grouptags)
+                            ("#PhD" . ?P)
+                            ("#coding" . ?C)
+                            ("#knowledge" . ?K)
+                            (:endgrouptag)
+                            (:startgrouptag)
+                            ("Status")
+                            (:grouptags)
+                            ("WAITING" . ?w)
+                            ("HOLD" . ?H)
+                            ("CANCELLED" . ?c)
+                            (:endgrouptag)
+                            (:startgrouptag . nil)
+                            ("Category")
+                            (:grouptags . nil)
+                            ("Hobby")
+                            ("Health")
+                            ("House")
+                            ("Bike")
+                            ("Bills")
+                            (:endgrouptag . nil))))
 
 (after! org (setq org-todo-keywords
       '((sequence "TODO(t)" "PROJ(p!)" "NEXT(n!)" "SOMEDAY(s!)" "DELEGATED(e@/!)" "|" "DONE(d@/!)")
@@ -231,35 +230,25 @@ only headings."
     (goto-char m)
     (set-marker m nil)))
 
-(setq org-capture-templates
-      `(("i" "Inbox" entry (file "~/Dropbox/org/gtd/inbox.org")
-         ,(concat "* TODO %?\n"
-                  "/Entered on/ %u"))
-        ("e" "Inbox [mail]" entry (file "~/Dropbox/org/gtd/inbox.org")
-         ,(concat "* TODO Process: \"%a\" %?\n"
-                  "/Entered on/ %u"))
-        ("c" "org-protocol-capture" entry (file "~/Dropbox/org/gtd/inbox.org")
-         "* TODO [[%:link][%:description]]\n\n %i"
-         :immediate-finish t)
-        ("m" "Metacognition")
-        ("mq" "Questions" entry (function ,(lambda ()
-                                             (pkn/olp-current-buffer "Metacognition" "Questions")))
-         ,(concat "* TODO Q: %?\n"
-                  "/Entered on/ %u"))
-        ("mn" "Notes" entry (function ,(lambda ()
-                                         (pkn/olp-current-buffer "Metacognition" "Notes")))
-         "* %?\n")))
-
-(use-package! org-protocol-capture-html
-  :after org-protocol
-  :config
-  (add-to-list 'org-capture-templates
-               '("w"
-                 "Web site"
-                 entry
-                 (file+headline +org-capture-notes-file "Website")  ; target
-                 "* %a :website:\n\n%U %?\n\n%:initial")
-               )
+(after! org
+  (setq org-capture-templates
+        `(("i" "Inbox" entry (file+headline "~/Dropbox/org/gtd/inbox.org" "Inbox")
+           ,(concat "* TODO %?\n"
+                    "/Entered on/ %u"))
+          ("e" "Inbox [mail]" entry (file+headline "~/Dropbox/org/gtd/inbox.org" "Email")
+           ,(concat "* TODO Process: \"%a\" %?\n"
+                    "/Entered on/ %u"))
+          ("c" "org-protocol-capture" entry (file "~/Dropbox/org/gtd/inbox.org")
+           "* TODO [[%:link][%:description]]\n\n %i"
+           :immediate-finish t)
+          ("m" "Metacognition")
+          ("mq" "Questions" entry (function ,(lambda ()
+                                               (pkn/olp-current-buffer "Metacognition" "Questions")))
+           ,(concat "* TODO Q: %?\n"
+                    "/Entered on/ %u"))
+          ("mn" "Notes" entry (function ,(lambda ()
+                                           (pkn/olp-current-buffer "Metacognition" "Notes")))
+           "* %?\n")))
   )
 
 (after! org-roam
@@ -308,14 +297,14 @@ only headings."
          :head "#+title: %<%A, %d %B %Y>\n\n"
          :olp ("General"))
 
-        ("m" "morning" entry
+        ("m" "morning Entry" entry
          #'org-roam-capture--get-point
          "* %?"
          :file-name "daily/%<%Y-%m-%d>"
          :head "#+title: %<%A, %d %B %Y>\n\n"
          :olp ("Morning Entry"))
 
-        ("j" "journal" entry
+        ("j" "journal Entry" entry
          #'org-roam-capture--get-point
          "* %?"
          :file-name "daily/%<%Y-%m-%d>"
@@ -372,25 +361,25 @@ Not for real use, just here for demonstration purposes."
    )
   )
 
- (use-package! org-roam-bibtex
-   :after (org-roam)
-   :hook (org-roam-mode . org-roam-bibtex-mode)
-   :config
-   (setq orb-preformat-keywords
-         '("citekey" "title" "url" "file" "author-or-editor" "keywords")
-         orb-process-file-field t
-         orb-file-field-extensions "pdf")
-   (setq orb-templates
-         '(("r" "ref" plain (function org-roam-capture--get-point)
-            ""
-            :file-name "literature/${citekey}"
-            :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n
+(use-package! org-roam-bibtex
+  :after (org-roam)
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (setq orb-preformat-keywords
+        '("citekey" "title" "url" "file" "author-or-editor" "keywords")
+        orb-process-file-field t
+        orb-file-field-extensions "pdf")
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "literature/${citekey}"
+           :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n
 
- - keywords :: ${keywords}
+- keywords :: ${keywords}
 
- \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${citekey}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: ${file}\n  :NOTER_PAGE: \n  :END:\n\n"
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${citekey}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: ${file}\n  :NOTER_PAGE: \n  :END:\n\n"
 
-            :unnarrowed t))))
+           :unnarrowed t))))
 
 (use-package! org-noter
   :after (:any org pdf-view)
@@ -409,6 +398,26 @@ Not for real use, just here for demonstration purposes."
 
 (use-package! org-roam-server)
 (add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
+
+(after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
+
+(with-eval-after-load 'org
+  ;; ... bunch of other org configurations ...
+  ;; Org-transclusion
+  (define-key global-map (kbd "<f12>") #'org-transclusion-mode))
+
+;; ... other configurations ...
+
+(add-hook 'org-mode-hook (lambda () (load-file "~/code/github-cloned/org-transclusion/org-transclusion.el")))
+
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/texlive/2020/bin/x86_64-linux"))
+(setq exec-path (append exec-path '("/usr/local/texlive/2020/bin/x86_64-linux")))
+
+(setq org-latex-pdf-process
+      '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
+;; add some latex class for article
+(add-to-list 'org-latex-classes
+             '("svjour3" "\\documentclass{svjour3}"))
 
 (setq org-file-apps
   '((auto-mode . emacs)

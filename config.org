@@ -15,6 +15,7 @@
   - [[#beacon-mode][Beacon mode]]
   - [[#which-key][Which-Key]]
   - [[#warning-level][Warning level]]
+- [[#checkers][CHECKERS]]
 - [[#completion][COMPLETION]]
 - [[#ui][UI]]
   - [[#themes][Themes]]
@@ -26,16 +27,20 @@
     - [[#global-org-settings][Global org settings]]
     - [[#fancy-customisation][Fancy Customisation]]
     - [[#org-capture-templates][org capture templates]]
-    - [[#org-protocol-capture-html][Org Protocol Capture html]]
     - [[#org-roam][Org-Roam]]
     - [[#org-ref][Org-Ref]]
     - [[#helm-bibtex][Helm-Bibtex]]
     - [[#org-roam-bibtex][Org-Roam-Bibtex]]
     - [[#org-noter][Org-Noter]]
     - [[#org-roam-server][Org-Roam-Server]]
+    - [[#ditaa][Ditaa]]
+    - [[#org-transclusion][Org-Transclusion]]
   - [[#latex][LATEX]]
 - [[#tools][TOOLS]]
   - [[#pdf][pdf]]
+- [[#extra-packages][Extra Packages]]
+  - [[#large-files][Large Files]]
+  - [[#latex-related][Latex related]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -129,6 +134,11 @@ This will keep the customize settings into separate file.
 ** Warning level
 #+begin_src emacs-lisp :tangle yes
 (setq warning-minimum-level :emergency)
+#+end_src
+* CHECKERS
+#+begin_src emacs-lisp :tangle yes
+(setq ispell-dictionary "en-custom")
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+end_src
 * COMPLETION
 #+begin_src emacs-lisp :tangle yes
@@ -321,43 +331,27 @@ only headings."
     (goto-char m)
     (set-marker m nil)))
 
-(setq org-capture-templates
-      `(("i" "Inbox" entry (file "~/Dropbox/org/gtd/inbox.org")
-         ,(concat "* TODO %?\n"
-                  "/Entered on/ %u"))
-        ("e" "Inbox [mail]" entry (file "~/Dropbox/org/gtd/inbox.org")
-         ,(concat "* TODO Process: \"%a\" %?\n"
-                  "/Entered on/ %u"))
-        ("c" "org-protocol-capture" entry (file "~/Dropbox/org/gtd/inbox.org")
-         "* TODO [[%:link][%:description]]\n\n %i"
-         :immediate-finish t)
-        ("m" "Metacognition")
-        ("mq" "Questions" entry (function ,(lambda ()
-                                             (pkn/olp-current-buffer "Metacognition" "Questions")))
-         ,(concat "* TODO Q: %?\n"
-                  "/Entered on/ %u"))
-        ("mn" "Notes" entry (function ,(lambda ()
-                                         (pkn/olp-current-buffer "Metacognition" "Notes")))
-         "* %?\n")))
-#+end_src
-*** Org Protocol Capture html
-:PROPERTIES:
-:ID:       12d3627c-f5c3-4de4-8378-7a2c86051b5b
-:END:
-#+begin_src emacs-lisp :tangle yes
-(use-package! org-protocol-capture-html
-  :after org-protocol
-  :config
-  (add-to-list 'org-capture-templates
-               '("w"
-                 "Web site"
-                 entry
-                 (file+headline +org-capture-notes-file "Website")  ; target
-                 "* %a :website:\n\n%U %?\n\n%:initial")
-               )
+(after! org
+  (setq org-capture-templates
+        `(("i" "Inbox" entry (file+headline "~/Dropbox/org/gtd/inbox.org" "Inbox")
+           ,(concat "* TODO %?\n"
+                    "/Entered on/ %u"))
+          ("e" "Inbox [mail]" entry (file+headline "~/Dropbox/org/gtd/inbox.org" "Email")
+           ,(concat "* TODO Process: \"%a\" %?\n"
+                    "/Entered on/ %u"))
+          ("c" "org-protocol-capture" entry (file "~/Dropbox/org/gtd/inbox.org")
+           "* TODO [[%:link][%:description]]\n\n %i"
+           :immediate-finish t)
+          ("m" "Metacognition")
+          ("mq" "Questions" entry (function ,(lambda ()
+                                               (pkn/olp-current-buffer "Metacognition" "Questions")))
+           ,(concat "* TODO Q: %?\n"
+                    "/Entered on/ %u"))
+          ("mn" "Notes" entry (function ,(lambda ()
+                                           (pkn/olp-current-buffer "Metacognition" "Notes")))
+           "* %?\n")))
   )
 #+end_src
-
 *** Org-Roam
 :PROPERTIES:
 :ID:       fb29d93f-b194-499f-81bc-93b7bf7485ea
@@ -409,14 +403,14 @@ only headings."
          :head "#+title: %<%A, %d %B %Y>\n\n"
          :olp ("General"))
 
-        ("m" "morning" entry
+        ("m" "morning Entry" entry
          #'org-roam-capture--get-point
          "* %?"
          :file-name "daily/%<%Y-%m-%d>"
          :head "#+title: %<%A, %d %B %Y>\n\n"
          :olp ("Morning Entry"))
 
-        ("j" "journal" entry
+        ("j" "journal Entry" entry
          #'org-roam-capture--get-point
          "* %?"
          :file-name "daily/%<%Y-%m-%d>"
@@ -528,7 +522,32 @@ modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
 (use-package! org-roam-server)
 (add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
 #+end_src
+*** Ditaa
+#+begin_src emacs-lisp :tangle yes
+(after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
+#+end_src
+*** Org-Transclusion
+#+begin_src emacs-lisp :tangle yes
+(with-eval-after-load 'org
+  ;; ... bunch of other org configurations ...
+  ;; Org-transclusion
+  (define-key global-map (kbd "<f12>") #'org-transclusion-mode))
+
+;; ... other configurations ...
+
+(add-hook 'org-mode-hook (lambda () (load-file "~/code/github-cloned/org-transclusion/org-transclusion.el")))
+#+end_src
 ** LATEX
+#+begin_src emacs-lisp :tangle yes
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/texlive/2020/bin/x86_64-linux"))
+(setq exec-path (append exec-path '("/usr/local/texlive/2020/bin/x86_64-linux")))
+
+(setq org-latex-pdf-process
+      '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
+;; add some latex class for article
+(add-to-list 'org-latex-classes
+             '("svjour3" "\\documentclass{svjour3}"))
+#+end_src
 * TOOLS
 ** pdf
 #+begin_src emacs-lisp :tangle yes
