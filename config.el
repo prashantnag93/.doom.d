@@ -68,6 +68,8 @@
 
 (setq warning-minimum-level :emergency)
 
+(setq org-hide-emphasis-markers t)
+
 (setq ispell-dictionary "en-custom")
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 
@@ -83,6 +85,27 @@
 (setq fancy-splash-image (concat doom-private-dir "banners/banner.png"))
 
 (doom/set-frame-opacity 85)
+
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+(setq frame-title-format
+      '(""
+        (:eval
+         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+             (replace-regexp-in-string
+              ".*/[0-9]*-?" "☰ "
+              (subst-char-in-string ?_ ?  buffer-file-name))
+           "%b"))
+        (:eval
+         (let ((project-name (projectile-project-name)))
+           (unless (string= "-" project-name)
+             (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
 
 ;;(setq deft-directory "~/Dropbox/org/roam/Notes/")
 (setq deft-recursive t)
@@ -269,7 +292,7 @@ only headings."
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
            :immediate-finish t
            :unnarrowed t)
-          ("p" "private" plain (function org-roam-capture--get-point)
+          ("p" "phd" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
@@ -427,3 +450,8 @@ Not for real use, just here for demonstration purposes."
     ("\\.png\\'" . viewnior)
     ("\\.jpg\\'" . viewnior)
     ))
+
+(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(defun projectile-ignored-project-function (filepath)
+  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
+  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
