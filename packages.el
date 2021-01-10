@@ -50,7 +50,7 @@
 ;(unpin! t)
 (package! org-roam-bibtex
   :recipe (:host github :repo "org-roam/org-roam-bibtex"))
-(unpin! org-roam company-org-roam)
+(unpin! org-roam)
 
 (package! org-ref)
 (unpin! org-ref)
@@ -77,3 +77,22 @@
 
 
 (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
+
+(package! cdlatex)
+(package! math-symbol-lists)
+(package! org-fragtog :pin "92119e3ae7c9a0ae2b5c9d9e4801b5fdc4804ad7")
+
+(package! auto-activating-snippets :recipe
+  (:host github :repo "ymarco/auto-activating-snippets")
+  :pin "a6386b062cacbbea30c6d239a771d69859839f1d")
+(package! latex-auto-activating-snippets
+  :recipe (:host github
+           :repo "tecosaur/latex-auto-activating-snippets"))
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "tecosaur/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
+(package! ox-word
+  :recipe (:host github
+           :repo "jkitchin/scimax"
+           :files ("ox-word.el")))

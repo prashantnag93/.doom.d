@@ -42,6 +42,12 @@
 - [[#tools][TOOLS]]
   - [[#pdf][pdf]]
   - [[#projectile][Projectile]]
+- [[#packages][Packages]]
+  - [[#company-math][Company-math]]
+  - [[#org-fragtog][org-fragtog]]
+  - [[#latex-auto-activating-snippets][Latex-auto-activating-snippets]]
+  - [[#org-pandoc-import][org-pandoc-import]]
+  - [[#ox-word][ox-word]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -138,7 +144,7 @@ This will keep the customize settings into separate file.
 #+end_src
 ** Hiding markup elements in org-mode
 #+begin_src emacs-lisp :tangle yes
-(setq org-hide-emphasis-markers t)
+(after! org (setq org-hide-emphasis-markers t))
 #+end_src
 * CHECKERS
 #+begin_src emacs-lisp :tangle yes
@@ -178,6 +184,9 @@ Let's change the dashboad with spalsh image.
                           (eq buffer-file-coding-system 'utf-8)))))
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+;; Whether show the icon for major mode. It should respect `doom-modeline-icon'.
+(setq doom-modeline-major-mode-icon t)
 #+end_src
 ** Window title
 I'd like to have just the buffer name, then if applicable the project folder
@@ -211,6 +220,7 @@ This will takes the settings for Deft.
 #+begin_src emacs-lisp
 (setq
  org_notes "~/Dropbox/org/"
+ ;; zot_bib "~/Desktop/exports/paperforwriting/PaperDraft/Paper1.bib"
  zot_bib "~/Dropbox/org/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
@@ -218,7 +228,7 @@ This will takes the settings for Deft.
  )
 
 (after! org
-    (setq org-default-notes-file "~/Dropbox/org/gtd/inbox.org")
+  (setq org-default-notes-file "~/Dropbox/org/gtd/inbox.org")
   (setq +org-capture-todo-file org-default-notes-file
         +org-capture-notes-file org-default-notes-file
         +org-capture-projects-file org-default-notes-file)
@@ -409,7 +419,7 @@ only headings."
            :unnarrowed t)
           ("p" "phd" plain (function org-roam-capture--get-point)
            "%?"
-           :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
+           :file-name "phd/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
            :immediate-finish t
            :unnarrowed t)))
@@ -492,7 +502,7 @@ Not for real use, just here for demonstration purposes."
     "* TODO Notes\n"
     ":PROPERTIES:\n"
     ":Custom_ID: ${=key=}\n"
-    ":NOTER_DOCUMENT: {file}\")\n"
+    ":NOTER_DOCUMENT: ${file}\")\n"
     ":AUTHOR: ${author-abbrev}\n"
     ":JOURNAL: ${journaltitle}\n"
     ":DATE: ${date}\n"
@@ -552,7 +562,18 @@ modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
 *** Org-Roam-Server
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-roam-server)
-(add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
+(defun org-roam-server-open ()
+  "Ensure the server is active, then open the roam graph."
+  (interactive)
+  (smartparens-global-mode -1)
+  (org-roam-server-mode 1)
+  (browse-url-firefox (format "http://localhost:%d" org-roam-server-port))
+  (smartparens-global-mode 1))
+
+(after! org-roam
+  (smartparens-global-mode -1)
+  (org-roam-server-mode)
+  (smartparens-global-mode 1))
 #+end_src
 *** Ditaa
 #+begin_src emacs-lisp :tangle yes
@@ -566,19 +587,57 @@ modified from [[https://github.com/zaeph/org-roam-bibtex/issues/4][here]].
   (define-key global-map (kbd "<f12>") #'org-transclusion-mode))
 
 ;; ... other configurations ...
-
-(add-hook 'org-mode-hook (lambda () (load-file "~/code/github-cloned/org-transclusion/org-transclusion.el")))
+(use-package! org-transclusion
+  :load-path "~/code/github-cloned/org-transclusion")
 #+end_src
 ** LATEX
 #+begin_src emacs-lisp :tangle yes
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/texlive/2020/bin/x86_64-linux"))
 (setq exec-path (append exec-path '("/usr/local/texlive/2020/bin/x86_64-linux")))
 
+;; (setq org-latex-pdf-process
+;;       '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
 (setq org-latex-pdf-process
-      '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
+      '("pdflatex -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "pdflatex -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -interaction nonstopmode -output-directory %o %f"))
+
 ;; add some latex class for article
-(add-to-list 'org-latex-classes
-             '("svjour3" "\\documentclass{svjour3}"))
+(add-to-list 'org-latex-classes '("Springer"
+                                  "\\documentclass[natbib]{svjour3}"
+                                  ("\\section{%s}" . "\\section*{%s}")
+                                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+'(org-preview-latex-process-alist
+  (quote
+   ((dvipng :programs
+            ("lualatex" "dvipng")
+            :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+            (1.0 . 1.0)
+            :latex-compiler
+            ("lualatex -output-format dvi -interaction nonstopmode -output-directory %o %f")
+            :image-converter
+            ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
+    (dvisvgm :programs
+             ("latex" "dvisvgm")
+             :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+             (1.7 . 1.5)
+             :latex-compiler
+             ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+             :image-converter
+             ("dvisvgm %f -n -b min -c %S -o %O"))
+    (imagemagick :programs
+                 ("latex" "convert")
+                 :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                 (1.0 . 1.0)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                 :image-converter
+                 ("convert -density %D -trim -antialias %f -quality 100 %O")))))
 #+end_src
 * TOOLS
 ** pdf
@@ -601,4 +660,44 @@ add package src directories to projectile. This isn't desirable in my opinion.
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+end_src
+* Packages
+** Company-math
+#+begin_src emacs-lisp :tangle yes
+(use-package! company-math
+  :after (:any org-mode TeX-mode)
+  :config
+  (set-company-backend! 'org-mode 'company-math-symbols-latex)
+  (set-company-backend! 'TeX-mode 'company-math-symbols-latex)
+  (set-company-backend! 'org-mode 'company-latex-commands)
+  (set-company-backend! 'TeX-mode 'company-latex-commands)
+  (setq company-tooltip-align-annotations t)
+  (setq company-math-allow-latex-symbols-in-faces t))
+#+end_src
+** org-fragtog
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+#+end_src
+** Latex-auto-activating-snippets
+#+begin_src emacs-lisp :tangle yes
+(use-package! auto-activating-snippets
+  :hook (LaTeX-mode . auto-activating-snippets-mode)
+  :config (require 'latex-auto-activating-snippets))
+
+(use-package! latex-auto-activating-snippets
+  :config
+  (defun als-tex-fold-maybe ()
+    (unless (equal "/" als-transient-snippet-key)
+      (+latex-fold-last-macro-a)))
+  (add-hook 'aas-post-snippet-expand-hook #'als-tex-fold-maybe))
+#+end_src
+** org-pandoc-import
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-pandoc-import :after org)
+#+end_src
+** ox-word
+#+begin_src emacs-lisp :tangle yes
+(use-package! ox-word
+  :after (:all org-ref ox)
+  :config)
 #+end_src

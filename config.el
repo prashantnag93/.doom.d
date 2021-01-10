@@ -68,7 +68,7 @@
 
 (setq warning-minimum-level :emergency)
 
-(setq org-hide-emphasis-markers t)
+(after! org (setq org-hide-emphasis-markers t))
 
 (setq ispell-dictionary "en-custom")
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
@@ -94,6 +94,9 @@
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
+;; Whether show the icon for major mode. It should respect `doom-modeline-icon'.
+(setq doom-modeline-major-mode-icon t)
+
 (setq frame-title-format
       '(""
         (:eval
@@ -115,6 +118,7 @@
 
 (setq
  org_notes "~/Dropbox/org/"
+ ;; zot_bib "~/Desktop/exports/paperforwriting/PaperDraft/Paper1.bib"
  zot_bib "~/Dropbox/org/Mylib.bib"
  org-directory org_notes
  deft-directory org_notes
@@ -122,7 +126,7 @@
  )
 
 (after! org
-    (setq org-default-notes-file "~/Dropbox/org/gtd/inbox.org")
+  (setq org-default-notes-file "~/Dropbox/org/gtd/inbox.org")
   (setq +org-capture-todo-file org-default-notes-file
         +org-capture-notes-file org-default-notes-file
         +org-capture-projects-file org-default-notes-file)
@@ -294,7 +298,7 @@ only headings."
            :unnarrowed t)
           ("p" "phd" plain (function org-roam-capture--get-point)
            "%?"
-           :file-name "private/%<%Y%m%d%H%M%S>-${slug}"
+           :file-name "phd/%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
            :immediate-finish t
            :unnarrowed t)))
@@ -372,7 +376,7 @@ Not for real use, just here for demonstration purposes."
     "* TODO Notes\n"
     ":PROPERTIES:\n"
     ":Custom_ID: ${=key=}\n"
-    ":NOTER_DOCUMENT: {file}\")\n"
+    ":NOTER_DOCUMENT: ${file}\")\n"
     ":AUTHOR: ${author-abbrev}\n"
     ":JOURNAL: ${journaltitle}\n"
     ":DATE: ${date}\n"
@@ -420,7 +424,18 @@ Not for real use, just here for demonstration purposes."
   )
 
 (use-package! org-roam-server)
-(add-hook 'org-roam-server-mode (lambda () (browse-url-firefox "http://localhost:8080")))
+(defun org-roam-server-open ()
+  "Ensure the server is active, then open the roam graph."
+  (interactive)
+  (smartparens-global-mode -1)
+  (org-roam-server-mode 1)
+  (browse-url-firefox (format "http://localhost:%d" org-roam-server-port))
+  (smartparens-global-mode 1))
+
+(after! org-roam
+  (smartparens-global-mode -1)
+  (org-roam-server-mode)
+  (smartparens-global-mode 1))
 
 (after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
@@ -430,17 +445,55 @@ Not for real use, just here for demonstration purposes."
   (define-key global-map (kbd "<f12>") #'org-transclusion-mode))
 
 ;; ... other configurations ...
-
-(add-hook 'org-mode-hook (lambda () (load-file "~/code/github-cloned/org-transclusion/org-transclusion.el")))
+(use-package! org-transclusion
+  :load-path "~/code/github-cloned/org-transclusion")
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/texlive/2020/bin/x86_64-linux"))
 (setq exec-path (append exec-path '("/usr/local/texlive/2020/bin/x86_64-linux")))
 
+;; (setq org-latex-pdf-process
+;;       '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
 (setq org-latex-pdf-process
-      '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
+      '("pdflatex -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "pdflatex -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -interaction nonstopmode -output-directory %o %f"))
+
 ;; add some latex class for article
-(add-to-list 'org-latex-classes
-             '("svjour3" "\\documentclass{svjour3}"))
+(add-to-list 'org-latex-classes '("Springer"
+                                  "\\documentclass[natbib]{svjour3}"
+                                  ("\\section{%s}" . "\\section*{%s}")
+                                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+'(org-preview-latex-process-alist
+  (quote
+   ((dvipng :programs
+            ("lualatex" "dvipng")
+            :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+            (1.0 . 1.0)
+            :latex-compiler
+            ("lualatex -output-format dvi -interaction nonstopmode -output-directory %o %f")
+            :image-converter
+            ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
+    (dvisvgm :programs
+             ("latex" "dvisvgm")
+             :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+             (1.7 . 1.5)
+             :latex-compiler
+             ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+             :image-converter
+             ("dvisvgm %f -n -b min -c %S -o %O"))
+    (imagemagick :programs
+                 ("latex" "convert")
+                 :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                 (1.0 . 1.0)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                 :image-converter
+                 ("convert -density %D -trim -antialias %f -quality 100 %O")))))
 
 (setq org-file-apps
   '((auto-mode . emacs)
@@ -455,3 +508,32 @@ Not for real use, just here for demonstration purposes."
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+
+(use-package! company-math
+  :after (:any org-mode TeX-mode)
+  :config
+  (set-company-backend! 'org-mode 'company-math-symbols-latex)
+  (set-company-backend! 'TeX-mode 'company-math-symbols-latex)
+  (set-company-backend! 'org-mode 'company-latex-commands)
+  (set-company-backend! 'TeX-mode 'company-latex-commands)
+  (setq company-tooltip-align-annotations t)
+  (setq company-math-allow-latex-symbols-in-faces t))
+
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
+(use-package! auto-activating-snippets
+  :hook (LaTeX-mode . auto-activating-snippets-mode)
+  :config (require 'latex-auto-activating-snippets))
+
+(use-package! latex-auto-activating-snippets
+  :config
+  (defun als-tex-fold-maybe ()
+    (unless (equal "/" als-transient-snippet-key)
+      (+latex-fold-last-macro-a)))
+  (add-hook 'aas-post-snippet-expand-hook #'als-tex-fold-maybe))
+
+(use-package! org-pandoc-import :after org)
+
+(use-package! ox-word
+  :after (:all org-ref ox)
+  :config)

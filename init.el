@@ -48,8 +48,8 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup
-        +all
-        +defaults)   ; tame sudden yet inevitable temporary windows
+        +all)
+        ;; +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
@@ -102,7 +102,7 @@
        direnv
        ;;docker
        ;;editorconfig      ; let someone else argue about tabs vs spaces
-       ;;ein               ; tame Jupyter notebooks with emacs
+       ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        (lookup
@@ -127,7 +127,7 @@
        ;;tty               ; improve the terminal Emacs experience
 
        :lang
-       ;;agda              ; types of types of types of types...
+       ;; agda              ; types of types of types of types...
        (cc
         +lsp)                ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
